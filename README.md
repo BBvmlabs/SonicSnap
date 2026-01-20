@@ -1,4 +1,4 @@
-# todo
+# SonicSnap
 
 A new Flutter project.
 
