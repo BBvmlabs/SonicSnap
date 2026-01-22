@@ -1,6 +1,6 @@
 {
-    "name": "todo",
-    "short_name": "todo",
+    "name": "sonic_snap",
+    "short_name": "sonic_snap",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

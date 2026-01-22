@@ -12,7 +12,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     final bool isSmallScreen = width < 600;
     return AppBar(
       backgroundColor: Colors.black,
-      title: Image.asset('logo/logo.png', height: 40),
+      title: Image.asset('assets/logo/logo.png', height: 40),
       actions: [
         IconButton(
           icon: const Icon(Icons.search, color: Colors.white),

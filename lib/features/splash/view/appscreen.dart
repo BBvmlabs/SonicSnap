@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todo/routes/router.dart';
-import 'package:todo/widgets/beat_animation.dart';
+import 'package:sonic_snap/routes/router.dart';
+import 'package:sonic_snap/widgets/beat_animation.dart';
 
 class AppScreen extends StatefulWidget {
   const AppScreen({super.key});
@@ -27,7 +27,7 @@ class _AppScreenState extends State<AppScreen> {
       backgroundColor: Colors.black,
       body: PulseAnimation(
         child: Image.asset(
-          'logo/appscreen.png',
+          'assets/logo/appscreen.png',
           width: 550,
         ),
       ),

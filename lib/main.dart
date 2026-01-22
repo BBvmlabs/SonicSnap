@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/routes/router.dart';
+import 'package:sonic_snap/routes/router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'TODO APP',
+      title: 'SonicSnap',
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
       theme: ThemeData(
