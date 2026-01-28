@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/music/view/play_now.dart';
 import 'package:sonic_snap/features/music/widgets/widgets.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
+import 'package:sonic_snap/routes/navigator.dart';
 import 'package:sonic_snap/routes/router.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -126,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen>
                           Switch(
                             value: false,
                             onChanged: (v) {},
-                            activeColor: Colors.purpleAccent,
+                            activeThumbColor: Colors.purpleAccent,
                           ),
                           IconButton(
                               onPressed: () {

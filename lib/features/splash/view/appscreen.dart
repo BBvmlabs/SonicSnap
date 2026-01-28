@@ -16,7 +16,7 @@ class _AppScreenState extends State<AppScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
-        context.go(AppRouter.homeScreen);
+        context.go('/login');
       }
     });
   }

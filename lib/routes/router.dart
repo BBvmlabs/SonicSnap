@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sonic_snap/features/auth/view/login_screen.dart';
 import 'package:sonic_snap/features/home/view/home_screen.dart';
 import 'package:sonic_snap/features/music/view/search_screen.dart';
 import 'package:sonic_snap/features/splash/view/appscreen.dart';
@@ -13,6 +12,7 @@ import 'package:sonic_snap/features/settings/view/sleep_timer_screen.dart';
 
 class AppRouter {
   static const String splashScreen = "/";
+  static const String loginScreen = "/login";
   static const String homeScreen = "/home-screen";
   static const String searchScreen = "/search-screen";
   static const String albumScreen = "/album-screen";
@@ -29,6 +29,10 @@ class AppRouter {
       GoRoute(
         path: splashScreen,
         builder: (context, state) => const AppScreen(),
+      ),
+      GoRoute(
+        path: loginScreen,
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: homeScreen,
@@ -67,12 +71,4 @@ class AppRouter {
       ),
     ],
   );
-}
-
-void navigate(BuildContext context, String route, {Object? extra}) {
-  if (kIsWeb) {
-    context.go(route, extra: extra);
-  } else {
-    context.push(route, extra: extra);
-  }
 }

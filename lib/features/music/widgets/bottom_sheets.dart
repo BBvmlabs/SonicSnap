@@ -167,7 +167,7 @@ class _SongOptionsSheet extends StatelessWidget {
         width: 40,
         height: 40,
         decoration:
-            BoxDecoration(color: Colors.white10, shape: BoxShape.circle),
+            const BoxDecoration(color: Colors.white10, shape: BoxShape.circle),
         child: Icon(icon, color: Colors.white, size: 20),
       ),
       title: Text(title,
@@ -175,7 +175,7 @@ class _SongOptionsSheet extends StatelessWidget {
               color: Colors.white, fontWeight: FontWeight.w500)),
       subtitle: subtitle != null
           ? Text(subtitle,
-              style: TextStyle(color: Colors.tealAccent, fontSize: 12))
+              style: const TextStyle(color: Colors.tealAccent, fontSize: 12))
           : null,
       trailing:
           isLink ? const Icon(Icons.chevron_right, color: Colors.grey) : null,
@@ -218,9 +218,9 @@ class _AddToPlaylistSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
-      decoration: BoxDecoration(
-        color: const Color(0xFF060F11), // Dark tealish black from screenshot
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: const BoxDecoration(
+        color: Color(0xFF060F11), // Dark tealish black from screenshot
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Column(
         children: [
@@ -350,9 +350,9 @@ class _SongDetailsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF18122B), // Deep Purple bg
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      decoration: const BoxDecoration(
+        color: Color(0xFF18122B), // Deep Purple bg
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       padding: const EdgeInsets.all(24),
       child: Column(

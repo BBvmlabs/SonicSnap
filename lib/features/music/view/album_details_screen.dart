@@ -35,30 +35,31 @@ class AlbumDetailsScreen extends StatelessWidget {
               backgroundColor: Colors.transparent,
               leading: IconButton(
                 icon: Container(
-                  padding: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
+                  padding: const EdgeInsets.all(8),
+                  decoration: const BoxDecoration(
                       color: Colors.black12, shape: BoxShape.circle),
-                  child: Icon(Icons.arrow_back, color: Colors.black),
+                  child: const Icon(Icons.arrow_back, color: Colors.black),
                 ),
                 onPressed: () => Navigator.pop(context),
               ),
               actions: [
                 IconButton(
                   icon: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
                         color: Colors.black12, shape: BoxShape.circle),
-                    child: Icon(Icons.cast, color: Colors.black),
+                    child: const Icon(Icons.cast, color: Colors.black),
                   ),
                   onPressed: () {},
                 ),
                 const SizedBox(width: 8),
                 IconButton(
                   icon: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
                         color: Colors.white, shape: BoxShape.circle),
-                    child: Icon(Icons.wb_sunny_outlined, color: Colors.black),
+                    child: const Icon(Icons.wb_sunny_outlined,
+                        color: Colors.black),
                   ),
                   onPressed: () {},
                 ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
-import 'package:sonic_snap/features/music/widgets/widgets.dart';
 
 class AlbumDetailsScreen extends StatelessWidget {
   final String title;

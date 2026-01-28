@@ -173,7 +173,7 @@ class StorageSettingsScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.grey, fontSize: 12)),
                     value: true,
                     onChanged: (v) {},
-                    activeColor: Colors.blueAccent,
+                    activeThumbColor: Colors.blueAccent,
                   ),
                   const Divider(height: 1, color: Colors.white10),
                   SwitchListTile(
@@ -188,7 +188,7 @@ class StorageSettingsScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.grey, fontSize: 12)),
                     value: false,
                     onChanged: (v) {},
-                    activeColor: Colors.blueAccent,
+                    activeThumbColor: Colors.blueAccent,
                   ),
                 ],
               ),
@@ -207,7 +207,7 @@ class StorageSettingsScreen extends StatelessWidget {
               decoration: BoxDecoration(
                   color: const Color(0xFF161B22),
                   borderRadius: BorderRadius.circular(16)),
-              child: Column(
+              child: const Column(
                 children: [
                   _ContentItem(
                       icon: Icons.library_music,
@@ -215,14 +215,14 @@ class StorageSettingsScreen extends StatelessWidget {
                       subtitle: "1,248 Files",
                       size: "12.4 GB",
                       color: Colors.cyan),
-                  const Divider(height: 1, color: Colors.white10),
+                  Divider(height: 1, color: Colors.white10),
                   _ContentItem(
                       icon: Icons.podcasts,
                       title: "Podcasts",
                       subtitle: "14 Episodes",
                       size: "450 MB",
                       color: Colors.purple),
-                  const Divider(height: 1, color: Colors.white10),
+                  Divider(height: 1, color: Colors.white10),
                   _ContentItem(
                       icon: Icons.image,
                       title: "Artwork Cache",

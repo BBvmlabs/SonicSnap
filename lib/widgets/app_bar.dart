@@ -8,8 +8,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-    final bool isSmallScreen = width < 600;
     return AppBar(
       backgroundColor: Colors.black,
       title: Image.asset('assets/logo/logo.png', height: 40),

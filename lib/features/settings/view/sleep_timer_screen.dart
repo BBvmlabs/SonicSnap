@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 class SleepTimerScreen extends StatefulWidget {
   const SleepTimerScreen({super.key});
@@ -43,17 +42,17 @@ class _SleepTimerScreenState extends State<SleepTimerScreen> {
               alignment: Alignment.center,
               children: [
                 // Track
-                SizedBox(
+                const SizedBox(
                   width: 260,
                   height: 260,
                   child: CircularProgressIndicator(
                     value: 1.0,
                     strokeWidth: 24,
-                    valueColor: AlwaysStoppedAnimation(const Color(0xFF161B22)),
+                    valueColor: AlwaysStoppedAnimation(Color(0xFF161B22)),
                   ),
                 ),
                 // Progress
-                SizedBox(
+                const SizedBox(
                   width: 260,
                   height: 260,
                   child: CircularProgressIndicator(
@@ -61,7 +60,7 @@ class _SleepTimerScreenState extends State<SleepTimerScreen> {
                     strokeWidth: 24,
                     strokeCap: StrokeCap.round,
                     valueColor:
-                        const AlwaysStoppedAnimation(Color(0xFF227C87)), // Teal
+                        AlwaysStoppedAnimation(Color(0xFF227C87)), // Teal
                   ),
                 ),
                 // Thumb (Mock position)
@@ -181,7 +180,7 @@ class _SleepTimerScreenState extends State<SleepTimerScreen> {
                 Switch(
                   value: finishLastSong,
                   onChanged: (v) => setState(() => finishLastSong = v),
-                  activeColor: Colors.white,
+                  activeThumbColor: Colors.white,
                   activeTrackColor: const Color(0xFF227C87),
                 ),
               ],

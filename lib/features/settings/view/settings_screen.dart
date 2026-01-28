@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sonic_snap/routes/navigator.dart';
 import 'package:sonic_snap/routes/router.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -229,7 +230,7 @@ class SettingsScreen extends StatelessWidget {
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: Colors.black,
+        activeThumbColor: Colors.black,
         activeTrackColor: Colors.tealAccent,
         inactiveThumbColor: Colors.grey,
         inactiveTrackColor: Colors.grey[800],

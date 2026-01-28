@@ -254,9 +254,9 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
                   ],
                 ),
               ),
-              CircularProgressIndicator(
+              const CircularProgressIndicator(
                   value: 0.75,
-                  valueColor: const AlwaysStoppedAnimation(Colors.white10),
+                  valueColor: AlwaysStoppedAnimation(Colors.white10),
                   strokeWidth: 4), // bg arc
               CircularProgressIndicator(
                   value: value * 0.75,
