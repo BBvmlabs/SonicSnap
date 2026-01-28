@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sonic_snap/core/app_theme.dart';
 import 'package:sonic_snap/features/auth/widgets/input_widget.dart';
+import 'package:sonic_snap/features/auth/widgets/music_visualizer.dart';
 import 'package:sonic_snap/routes/navigator.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,39 +14,220 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  double screenWidth = 0;
+  bool isLargeScreen = false;
+  bool isOfflineMode = false;
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    isLargeScreen = screenWidth > 1000;
     return Scaffold(
-      backgroundColor: Colors.black,
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
-        child: Column(
+        child: isLargeScreen ? buildLargeScreen() : buildSmallScreen(),
+      ),
+    );
+  }
+
+  Widget _buildLogo() {
+    return Column(
+      children: [
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Welcome Back!',
-                style: Theme.of(context).textTheme.headlineLarge),
-            Text('Login to your account',
-                style: Theme.of(context).textTheme.headlineMedium),
-            const SizedBox(height: 16),
-            LoginInputWidget(
-                label: "Email",
-                placeholder: "Email",
-                controller: emailController),
-            const SizedBox(height: 16),
-            LoginInputWidget(
-              label: "Password",
-              placeholder: "Password",
-              controller: passwordController,
-              isPassword: true,
+            const MusicVisualizer(
+              barCount: 5,
+              width: 50,
+              height: 40,
+              showDots: false,
             ),
-            ElevatedButton(
-                onPressed: () {
-                  navigate(context, "/home-screen");
-                },
-                child: const Text('Login')),
+            const SizedBox(width: 16),
+            Text(
+              "SONICSNAP",
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 4,
+                    color: Colors.white,
+                  ),
+            ),
+            const SizedBox(width: 16),
+            const MusicVisualizer(
+              barCount: 5,
+              width: 50,
+              height: 40,
+              showDots: false,
+            ),
           ],
         ),
+        const SizedBox(height: 12),
+        Text(
+          "PLUG INTO THE SOUNDSCAPE",
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontSize: 10,
+                letterSpacing: 3,
+                color: Colors.white24,
+                fontWeight: FontWeight.w900,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("EMAIL ADDRESS",
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                  color: Colors.white60,
+                )),
+        const SizedBox(height: 12),
+        LoginInputWidget(
+            label: "Email",
+            placeholder: "user@example.com",
+            controller: emailController),
+        const SizedBox(height: 24),
+        Text("PASSWORD",
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                  color: Colors.white60,
+                )),
+        const SizedBox(height: 12),
+        LoginInputWidget(
+          label: "Password",
+          placeholder: "• • • • • • • • • •",
+          controller: passwordController,
+          isPassword: true,
+        ),
+      ],
+    );
+  }
+
+  Widget buildWelcomeText() {
+    return Column(
+      children: [
+        Text('PlLUG INOT THE SOUNDSCAPE',
+            style: isLargeScreen
+                ? Theme.of(context).textTheme.bodyLarge
+                : Theme.of(context).textTheme.bodySmall),
+      ],
+    );
+  }
+
+  Widget screenButtons() {
+    return Column(
+      children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButton(
+            onPressed: () {},
+            child: Text(
+              'Forgot Password?',
+              style: TextStyle(color: AppTheme.primaryCyan.withOpacity(0.8)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Offline Only Mode",
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Switch(
+              value: isOfflineMode,
+              activeColor: AppTheme.primaryCyan,
+              onChanged: (val) {
+                setState(() => isOfflineMode = val);
+              },
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          onPressed: () => navigate(context, "/home-screen"),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("SIGN IN"),
+              SizedBox(width: 8),
+              Icon(Icons.login_rounded, size: 20),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        OutlinedButton(
+          onPressed: () {},
+          child: const Center(child: Text("Create Account")),
+        ),
+        // _buildSocialLogin(),
+      ],
+    );
+  }
+
+  Widget buildCard() {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 500),
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 48),
+          buildForm(),
+          const SizedBox(height: 16),
+          screenButtons(),
+        ],
+      ),
+    );
+  }
+
+  Widget buildLargeScreen() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildLogo(),
+            ],
+          ),
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                buildCard(),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildSmallScreen() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+      child: Column(
+        children: [
+          _buildLogo(),
+          const SizedBox(height: 48),
+          buildForm(),
+          screenButtons(),
+        ],
       ),
     );
   }

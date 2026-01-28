@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rename/platform_file_editors/ios_platform_file_editor.dart';
 
 class LoginInputWidget extends StatefulWidget {
   final String label;
@@ -18,35 +17,41 @@ class LoginInputWidget extends StatefulWidget {
 }
 
 class _LoginInputWidgetState extends State<LoginInputWidget> {
-  bool showPassword = false;
+  late bool obscureText;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize obscureText to true if it's a password field
+    obscureText = widget.isPassword;
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.white, fontSize: 16),
       decoration: InputDecoration(
-          border: const OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
-          labelText: widget.label,
-          hintText: widget.placeholder,
-          suffixIcon: widget.isPassword
-              ? IconButton(
-                  onPressed: () {
-                    setState(() {
-                      showPassword = !showPassword;
-                    });
-                  },
-                  icon: showPassword
-                      ? const Icon(Icons.visibility_off)
-                      : const Icon(Icons.password),
-                )
-              : const Icon(Icons.mail),
-          suffixIconColor: Colors.white),
+        hintText: widget.placeholder,
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                onPressed: () {
+                  setState(() {
+                    obscureText = !obscureText;
+                  });
+                },
+                icon: Icon(
+                  obscureText ? Icons.visibility : Icons.visibility_off,
+                  size: 24,
+                ),
+              )
+            : const Padding(
+                padding: EdgeInsets.only(right: 12),
+                child: Icon(Icons.alternate_email, size: 24),
+              ),
+        suffixIconColor: Colors.white38,
+      ),
       controller: widget.controller,
-      obscureText: showPassword,
-      obscuringCharacter: '⨌',
+      obscureText: widget.isPassword && obscureText,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sonic_snap/core/app_theme.dart';
 import 'package:sonic_snap/routes/router.dart';
 
 void main() {
@@ -15,10 +16,9 @@ class MyApp extends StatelessWidget {
       title: 'SonicSnap',
       debugShowCheckedModeBanner: false,
       routerConfig: AppRouter.router,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
     );
   }
 }
