@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sonic_snap/routes/router.dart';
 import 'package:sonic_snap/widgets/beat_animation.dart';
 
 class AppScreen extends StatefulWidget {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sonic_snap/features/music/widgets/widgets.dart';
+import 'package:sonic_snap/widgets/music_visualizer.dart';
 
 class SongCard extends StatelessWidget {
   final String title;
@@ -48,18 +50,6 @@ class SongCard extends StatelessWidget {
                   ),
                 ],
               ),
-              child: isPlaying
-                  ? Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Center(
-                        child: Icon(Icons.graphic_eq,
-                            color: Colors.purpleAccent, size: 24),
-                      ),
-                    )
-                  : null,
             ),
 
             const SizedBox(width: 16),
@@ -105,6 +95,12 @@ class SongCard extends StatelessWidget {
               ),
             ),
 
+            if (isPlaying) ...[
+              const SizedBox(width: 16),
+              _buildVisualizer(),
+            ],
+            const SizedBox(width: 16),
+
             // Duration & Actions
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -129,6 +125,24 @@ class SongCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildVisualizer() {
+    return MusicVisualizerV2(
+      barSizes: const [
+        // VisualizerBarSize.s,
+        // VisualizerBarSize.l,
+        VisualizerBarSize.s,
+        VisualizerBarSize.axl,
+        VisualizerBarSize.s,
+        // VisualizerBarSize.l,
+        // VisualizerBarSize.s,
+      ],
+      width: 50,
+      height: 50,
+      showDots: false,
+      baseColor: color,
     );
   }
 }

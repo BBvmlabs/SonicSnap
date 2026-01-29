@@ -34,8 +34,7 @@ class _AudioVisualizerWidgetState extends State<AudioVisualizerWidget>
 
     _animationController = AnimationController(
       vsync: this,
-      duration:
-          const Duration(milliseconds: 100), // Faster update for smoother look
+      duration: const Duration(minutes: 1), // Faster update for smoother look
     )..addListener(() {
         if (widget.isPlaying) {
           setState(() {

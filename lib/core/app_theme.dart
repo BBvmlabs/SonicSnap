@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Brand Colors
@@ -154,51 +155,56 @@ class AppTheme {
         surfaceContainerHighest: Color(0xFF1C2224),
       ),
       scaffoldBackgroundColor: darkBg,
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
+      textTheme: TextTheme(
+        displayLarge: const TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
-        headlineLarge: TextStyle(
+        headlineLarge: const TextStyle(
           fontSize: 32,
           fontWeight: FontWeight.w900,
           letterSpacing: 1.5,
           color: Colors.white,
         ),
-        headlineMedium: TextStyle(
+        headlineMedium: const TextStyle(
           fontSize: 20,
           fontFamily: 'Poppins',
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),
-        titleLarge: TextStyle(
+        titleLarge: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),
-        bodyLarge: TextStyle(
+        bodyLarge: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
           color: Colors.white70,
         ),
-        bodyMedium: TextStyle(
+        bodyMedium: const TextStyle(
           fontSize: 16,
           color: Colors.white70,
         ),
-        bodySmall: TextStyle(
+        bodySmall: const TextStyle(
           fontSize: 14,
           color: Colors.white70,
         ),
-        labelLarge: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: primaryCyan,
+        labelLarge: GoogleFonts.audiowide(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white70,
         ),
-        labelMedium: TextStyle(
+        labelMedium: GoogleFonts.audiowide(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white70,
+        ),
+        labelSmall: GoogleFonts.audiowide(
           fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: primaryCyan,
+          fontWeight: FontWeight.bold,
+          color: Colors.white70,
         ),
       ),
       appBarTheme: const AppBarTheme(

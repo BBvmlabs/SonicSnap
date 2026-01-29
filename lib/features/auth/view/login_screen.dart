@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/core/app_theme.dart';
 import 'package:sonic_snap/features/auth/widgets/input_widget.dart';
-import 'package:sonic_snap/features/auth/widgets/music_visualizer.dart';
 import 'package:sonic_snap/routes/navigator.dart';
+import 'package:sonic_snap/widgets/appLogo.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,57 +30,12 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLogo() {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const MusicVisualizer(
-              barCount: 5,
-              width: 50,
-              height: 40,
-              showDots: false,
-            ),
-            const SizedBox(width: 16),
-            Text(
-              "SONICSNAP",
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 4,
-                    color: Colors.white,
-                  ),
-            ),
-            const SizedBox(width: 16),
-            const MusicVisualizer(
-              barCount: 5,
-              width: 50,
-              height: 40,
-              showDots: false,
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text(
-          "PLUG INTO THE SOUNDSCAPE",
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: 10,
-                letterSpacing: 3,
-                color: Colors.white24,
-                fontWeight: FontWeight.w900,
-              ),
-        ),
-      ],
-    );
-  }
-
   Widget buildForm() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("EMAIL ADDRESS",
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                   color: Colors.white60,
@@ -92,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
             controller: emailController),
         const SizedBox(height: 24),
         Text("PASSWORD",
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.2,
                   color: Colors.white60,
@@ -128,7 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: () {},
             child: Text(
               'Forgot Password?',
-              style: TextStyle(color: AppTheme.primaryCyan.withOpacity(0.8)),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: AppTheme.primaryCyan.withOpacity(0.8),
+                  ),
             ),
           ),
         ),
@@ -146,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Switch(
               value: isOfflineMode,
-              activeColor: AppTheme.primaryCyan,
+              activeThumbColor: AppTheme.primaryCyan,
               onChanged: (val) {
                 setState(() => isOfflineMode = val);
               },
@@ -199,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildLogo(),
+              buildLogo(context),
             ],
           ),
         ),
@@ -223,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: Column(
         children: [
-          _buildLogo(),
+          buildLogo(context),
           const SizedBox(height: 48),
           buildForm(),
           screenButtons(),

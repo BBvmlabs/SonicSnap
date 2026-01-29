@@ -15,8 +15,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool isPlaying = false;
   bool isPlayerExpanded = false;
   bool isBigScreen = false;
+  int _selectedSongIndex = 0;
+
+  void _nextSong() {
+    setState(() {
+      _selectedSongIndex = (_selectedSongIndex + 1) % _songs.length;
+    });
+  }
+
+  void _previousSong() {
+    setState(() {
+      _selectedSongIndex =
+          (_selectedSongIndex - 1 + _songs.length) % _songs.length;
+    });
+  }
 
   final List<Map<String, dynamic>> _songs = [
     {
@@ -145,12 +160,16 @@ class _HomeScreenState extends State<HomeScreen>
                         child: TabBar(
                           controller: _tabController,
                           isScrollable: true,
-                          indicatorColor: Colors.purpleAccent,
+                          // indicatorColor: Colors.purpleAccent,
                           indicatorWeight: 3,
                           labelColor: Colors.purpleAccent,
+                          // unselectedLabelStyle: const TextStyle(
+                          //     fontWeight: FontWeight.bold, fontSize: 16),
                           unselectedLabelColor: Colors.grey,
-                          labelStyle: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                          labelStyle:
+                              Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                           tabs: const [
                             Tab(text: "Tracks"),
                             Tab(text: "Downloads"),
@@ -238,11 +257,12 @@ class _HomeScreenState extends State<HomeScreen>
                           imageUrl: song['image'],
                           color: song['color'],
                           duration: song['duration'] ?? "3:45",
-                          isPlaying: index == 0,
+                          isPlaying: isPlaying && _selectedSongIndex == index,
                           onTap: () {
-                            if (!isPlayerExpanded) {
-                              _togglePlayer();
-                            }
+                            setState(() {
+                              _selectedSongIndex = index;
+                              isPlaying = true;
+                            });
                           },
                           onMore: () {
                             showSongOptionsSheet(
@@ -266,14 +286,19 @@ class _HomeScreenState extends State<HomeScreen>
               bottom: 0,
               child: PlayNowScreen(
                 isExpanded: isPlayerExpanded,
-                title: "Diesel Power",
-                image: "assets/logo/play_now.png",
-                description: "The Prodigy",
-                onTap: _togglePlayer, // Tap mini player -> Toggle
-                onPrevious: () {},
-                onNext: () {},
-                onPressed: () {},
-                color: Colors.purple,
+                title: _songs[_selectedSongIndex]['title'],
+                image: _songs[_selectedSongIndex]['image'],
+                description: _songs[_selectedSongIndex]['artist'],
+                isPlaying: isPlaying,
+                onTap: _togglePlayer,
+                onPlayPause: () {
+                  setState(() {
+                    isPlaying = !isPlaying;
+                  });
+                }, // Tap mini player -> Toggle
+                onPrevious: _previousSong,
+                onNext: _nextSong,
+                color: _songs[_selectedSongIndex]['color'],
               ),
             ),
           ],

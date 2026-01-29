@@ -17,23 +17,23 @@ class SongInfoWidget extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 28,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                fontSize: 28,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 8),
         Text(
           description,
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.white.withOpacity(0.7),
-            fontWeight: FontWeight.w400,
-          ),
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                fontSize: 16,
+                color: Colors.white.withOpacity(0.7),
+                fontWeight: FontWeight.w400,
+              ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

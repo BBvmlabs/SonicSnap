@@ -13,10 +13,11 @@ class PlayNowScreen extends StatefulWidget {
   final String image;
   final Color color;
   final String description;
-  final Function() onTap;
-  final Function() onPrevious;
-  final Function() onNext;
-  final Function() onPressed;
+  final bool isPlaying;
+  final VoidCallback onPlayPause;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+  final VoidCallback onTap;
 
   const PlayNowScreen({
     required this.isExpanded,
@@ -25,10 +26,11 @@ class PlayNowScreen extends StatefulWidget {
     required this.image,
     required this.description,
     required this.onTap,
+    required this.onPlayPause,
     required this.onPrevious,
     required this.onNext,
-    required this.onPressed,
     required this.color,
+    required this.isPlaying,
   });
 
   @override
@@ -37,7 +39,6 @@ class PlayNowScreen extends StatefulWidget {
 
 class _PlayNowScreenState extends State<PlayNowScreen>
     with SingleTickerProviderStateMixin {
-  bool isPlaying = true;
   late bool isExpanded;
   double currentPosition = 55; // in seconds
   double totalDuration = 258; // in seconds (4:18)
@@ -78,21 +79,11 @@ class _PlayNowScreenState extends State<PlayNowScreen>
   }
 
   void _toggleView() {
-    setState(() {
-      isExpanded = !isExpanded;
-      if (isExpanded) {
-        _animationController.forward();
-      } else {
-        _animationController.reverse();
-      }
-    });
+    widget.onTap();
   }
 
   void _togglePlayPause() {
-    setState(() {
-      isPlaying = !isPlaying;
-    });
-    widget.onPressed();
+    widget.onPlayPause();
   }
 
   @override
@@ -126,8 +117,8 @@ class _PlayNowScreenState extends State<PlayNowScreen>
         image: widget.image,
         description: widget.description,
         color: widget.color,
-        isPlaying: isPlaying,
-        onTap: _toggleView,
+        isPlaying: widget.isPlaying,
+        onTap: widget.onTap,
         onPlayPause: _togglePlayPause,
         onPrevious: widget.onPrevious,
         onNext: widget.onNext,
@@ -240,7 +231,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
               child: AlbumArtWidget(
                 image: widget.image,
                 color: widget.color,
-                isPlaying: isPlaying,
+                isPlaying: widget.isPlaying,
               ),
             ),
           ),
@@ -267,14 +258,14 @@ class _PlayNowScreenState extends State<PlayNowScreen>
             currentPosition: currentPosition,
             totalDuration: totalDuration,
             color: widget.color,
-            isPlaying: isPlaying,
+            isPlaying: widget.isPlaying,
           ),
 
           const SizedBox(height: 10),
 
           // Playback controls
           PlaybackControlsWidget(
-            isPlaying: isPlaying,
+            isPlaying: widget.isPlaying,
             onPlayPause: _togglePlayPause,
             onPrevious: widget.onPrevious,
             onNext: widget.onNext,
@@ -306,7 +297,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
             child: AlbumArtWidget(
               image: widget.image,
               color: widget.color,
-              isPlaying: isPlaying,
+              isPlaying: widget.isPlaying,
             ),
           ),
 
@@ -331,11 +322,11 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                   currentPosition: currentPosition,
                   totalDuration: totalDuration,
                   color: widget.color,
-                  isPlaying: isPlaying,
+                  isPlaying: widget.isPlaying,
                 ),
                 const SizedBox(height: 20),
                 PlaybackControlsWidget(
-                  isPlaying: isPlaying,
+                  isPlaying: widget.isPlaying,
                   onPlayPause: _togglePlayPause,
                   onPrevious: widget.onPrevious,
                   onNext: widget.onNext,
