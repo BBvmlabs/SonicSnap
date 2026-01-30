@@ -111,7 +111,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
 
   Widget _buildMiniPlayer() {
     return Container(
-      color: Colors.transparent, // Or a solid background if needed
+      color: const Color.fromRGBO(0, 0, 0, 0), // Or a solid background if needed
       child: MiniPlayerWidget(
         title: widget.title,
         image: widget.image,
@@ -144,7 +144,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                widget.color.withOpacity(0.3),
+                widget.color,
                 Colors.black,
                 Colors.black,
               ],
@@ -205,7 +205,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                 // Cast or share functionality
               },
               icon: Icon(
-                Icons.cast_rounded,
+                Icons.graphic_eq,
                 color: Colors.white.withOpacity(0.7),
                 size: 24,
               ),
@@ -237,6 +237,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
           ),
 
           // Song info and action buttons
+          const SizedBox(height: 20),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -244,7 +245,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                 title: widget.title,
                 description: widget.description,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               ActionButtonsWidget(
                 color: widget.color,
               ),
@@ -307,7 +308,8 @@ class _PlayNowScreenState extends State<PlayNowScreen>
           Expanded(
             flex: 1,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SongInfoWidget(
                   title: widget.title,
@@ -332,10 +334,12 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                   onNext: widget.onNext,
                   color: widget.color,
                 ),
-                const SizedBox(height: 20),
-                AudioQualityBadge(
-                  quality: 'FLAC 24-bit / 96 kHz',
-                  color: widget.color,
+                const SizedBox(height: 30),
+                Center(
+                  child: AudioQualityBadge(
+                    quality: 'FLAC 24-bit / 96 kHz',
+                    color: widget.color,
+                  ),
                 ),
               ],
             ),

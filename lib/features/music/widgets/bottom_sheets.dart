@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sonic_snap/features/songs/view/song_details_scree.dart';
+import 'package:sonic_snap/routes/navigator.dart';
+import 'package:sonic_snap/routes/router.dart';
 
 // --- Contextual Menu (Three dots) ---
 void showSongOptionsSheet(BuildContext context, Map<String, dynamic> song,
@@ -124,6 +127,11 @@ class _SongOptionsSheet extends StatelessWidget {
             Navigator.pop(context);
             showSongDetailsSheet(context, song);
           }, subtitle: "1411kbps • Stereo • 44.1kHz"),
+
+          _buildOption(Icons.open_in_new, "Open Details as Page", onTap: () {
+            Navigator.pop(context);
+            navigate(context, AppRouter.songDetailsScreen, extra: song);
+          }),
 
           const SizedBox(height: 16),
 
@@ -339,178 +347,28 @@ void showSongDetailsSheet(BuildContext context, Map<String, dynamic> song) {
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (context) => _SongDetailsSheet(song: song),
-  );
-}
-
-class _SongDetailsSheet extends StatelessWidget {
-  final Map<String, dynamic> song;
-  const _SongDetailsSheet({required this.song});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF18122B), // Deep Purple bg
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white54),
-                  onPressed: () => Navigator.pop(context))),
-          const Text("Track Details",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold)),
-          const SizedBox(height: 24),
-
-          // Art
-          Container(
-            width: 140,
-            height: 160,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              image: DecorationImage(
-                  image:
-                      AssetImage(song['image'] ?? "assets/logo/play_now.png"),
-                  fit: BoxFit.cover),
-              border: Border.all(color: Colors.white24, width: 4),
+    builder: (context) {
+      return DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF18122B),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
             ),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(4)),
-                child: const Text("FLAC",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold)),
+            child: SingleChildScrollView(
+              controller: scrollController,
+              child: SongDetailsContent(
+                song: song,
+                onClose: () => Navigator.pop(context),
               ),
             ),
-          ),
-
-          const SizedBox(height: 16),
-          Text(song['title'] ?? "Unknown",
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold)),
-          Text(song['artist'] ?? "Unknown",
-              style: const TextStyle(color: Colors.purpleAccent, fontSize: 16)),
-
-          const SizedBox(height: 32),
-
-          Row(
-            children: [
-              _buildStatBox("BITRATE", "1411 kbps"),
-              const SizedBox(width: 16),
-              _buildStatBox("SAMPLE RATE", "44.1 kHz"),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-                color: Colors.white10, borderRadius: BorderRadius.circular(16)),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("FILE SIZE",
-                      style: TextStyle(color: Colors.grey, fontSize: 10)),
-                  SizedBox(height: 4),
-                  Text("32.4 MB",
-                      style: TextStyle(color: Colors.white, fontSize: 16))
-                ]),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("DURATION",
-                      style: TextStyle(color: Colors.grey, fontSize: 10)),
-                  SizedBox(height: 4),
-                  Text("4:42",
-                      style: TextStyle(color: Colors.white, fontSize: 16))
-                ]),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text("TYPE",
-                      style: TextStyle(color: Colors.grey, fontSize: 10)),
-                  SizedBox(height: 4),
-                  Text("Stereo",
-                      style: TextStyle(color: Colors.white, fontSize: 16))
-                ]),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-
-          _buildActionItem(Icons.edit, "Edit Tags"),
-          const SizedBox(height: 8),
-          _buildActionItem(Icons.smartphone, "Set as Ringtone"),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatBox(String label, String value) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-            color: Colors.white10, borderRadius: BorderRadius.circular(16)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label,
-                style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold)),
-            const SizedBox(height: 6),
-            Text(value,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionItem(IconData icon, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-          color: Colors.white10, borderRadius: BorderRadius.circular(16)),
-      child: Row(
-        children: [
-          Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  color: Colors.purple.withOpacity(0.2),
-                  shape: BoxShape.circle),
-              child: Icon(icon, color: Colors.purpleAccent, size: 20)),
-          const SizedBox(width: 16),
-          Text(label,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold)),
-          const Spacer(),
-          const Icon(Icons.chevron_right, color: Colors.grey),
-        ],
-      ),
-    );
-  }
+          );
+        },
+      );
+    },
+  );
 }

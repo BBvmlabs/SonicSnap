@@ -22,6 +22,8 @@ class MusicVisualizer extends StatefulWidget {
   final double height;
   final bool showDots;
   final Color color;
+  final double barWidth;
+  final double gap;
 
   const MusicVisualizer({
     super.key,
@@ -30,6 +32,8 @@ class MusicVisualizer extends StatefulWidget {
     this.height = 100,
     this.showDots = true,
     this.color = const Color(0xFF66FFFF),
+    this.barWidth = 6,
+    this.gap = 3,
   });
 
   @override
@@ -117,37 +121,24 @@ class _MusicVisualizerState extends State<MusicVisualizer>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: List.generate(widget.barCount, (index) {
-              int centerIndex = widget.barCount ~/ 4;
-              bool isCenter = index == centerIndex;
-
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: 6,
-                height: widget.height *
-                    (isCenter ? _heights[index] * 1.5 : _heights[index]),
+                margin: EdgeInsets.symmetric(horizontal: widget.gap),
+                width: widget.barWidth,
+                height: widget.height * _heights[index],
                 decoration: BoxDecoration(
-                  gradient: isCenter
-                      ? LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            widget.color,
-                            widget.color.withOpacity(0.5),
-                          ],
-                        )
-                      : LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            widget.color,
-                            widget.color.withOpacity(0.5),
-                          ],
-                        ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      widget.color,
+                      widget.color.withOpacity(0.5),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF66FFFF).withOpacity(0.5),
-                      blurRadius: 15,
+                      color: widget.color.withOpacity(0.5),
+                      blurRadius: widget.barWidth * 2,
                       spreadRadius: 1,
                     ),
                   ],
@@ -166,7 +157,7 @@ class MusicVisualizerV2 extends StatefulWidget {
   final double width;
   final double height;
   final bool showDots;
-  final Color? baseColor;
+  final List<Color>? baseColors;
 
   const MusicVisualizerV2({
     super.key,
@@ -174,7 +165,7 @@ class MusicVisualizerV2 extends StatefulWidget {
     this.width = 160,
     this.height = 100,
     this.showDots = true,
-    this.baseColor,
+    this.baseColors,
   });
 
   @override
@@ -263,11 +254,8 @@ class _MusicVisualizerV2State extends State<MusicVisualizerV2>
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: widget.baseColor != null
-                            ? [
-                                widget.baseColor!,
-                                widget.baseColor!.withOpacity(0.5)
-                              ]
+                        colors: widget.baseColors != null
+                            ? widget.baseColors!
                             : const [
                                 Color(0xFF66FFFF), // Cyan
                                 Color(0xFFE497FF), // Purple/Pink

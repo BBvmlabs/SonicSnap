@@ -12,13 +12,16 @@ class SongInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isWideScreen = MediaQuery.of(context).size.width > 600;
+
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontSize: 28,
+                fontSize: isWideScreen ? 42 : 28,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
@@ -26,11 +29,11 @@ class SongInfoWidget extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: isWideScreen ? 16 : 8),
         Text(
           description,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                fontSize: 16,
+                fontSize: isWideScreen ? 24 : 16,
                 color: Colors.white.withOpacity(0.7),
                 fontWeight: FontWeight.w400,
               ),

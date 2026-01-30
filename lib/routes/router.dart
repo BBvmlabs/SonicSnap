@@ -9,6 +9,7 @@ import 'package:sonic_snap/features/settings/view/settings_screen.dart';
 import 'package:sonic_snap/features/settings/view/equalizer_screen.dart';
 import 'package:sonic_snap/features/settings/view/storage_settings_screen.dart';
 import 'package:sonic_snap/features/settings/view/sleep_timer_screen.dart';
+import 'package:sonic_snap/features/music/view/song_details_screen.dart';
 
 class AppRouter {
   static const String splashScreen = "/";
@@ -22,6 +23,7 @@ class AppRouter {
   static const String equalizerScreen = "/equalizer-screen";
   static const String storageScreen = "/storage-screen";
   static const String sleepTimerScreen = "/sleep-timer-screen";
+  static const String songDetailsScreen = "/song-details-screen";
 
   static final router = GoRouter(
     initialLocation: splashScreen,
@@ -67,6 +69,13 @@ class AppRouter {
             artist: extra['artist'] ?? 'Unknown Artist',
             image: extra['image'] ?? 'assets/logo/play_now.png',
           );
+        },
+      ),
+      GoRoute(
+        path: songDetailsScreen,
+        builder: (context, state) {
+          final song = state.extra as Map<String, dynamic>;
+          return SongDetailsScreen(song: song);
         },
       ),
     ],

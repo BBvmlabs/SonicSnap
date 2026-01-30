@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sonic_snap/features/music/widgets/widgets.dart';
 import 'package:sonic_snap/widgets/music_visualizer.dart';
 
 class SongCard extends StatelessWidget {
@@ -9,6 +8,7 @@ class SongCard extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
   final VoidCallback? onMore;
+  final bool isSelected;
   final bool isPlaying;
   final String duration;
 
@@ -19,6 +19,7 @@ class SongCard extends StatelessWidget {
     required this.imageUrl,
     required this.color,
     required this.onTap,
+    this.isSelected = false,
     this.onMore,
     this.isPlaying = false,
     this.duration = "4:00",
@@ -64,21 +65,27 @@ class SongCard extends StatelessWidget {
                       Flexible(
                         child: Text(
                           title,
-                          style: TextStyle(
-                            color:
-                                isPlaying ? Colors.purpleAccent : Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: isSelected
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .labelMedium
+                                  ?.copyWith(
+                                    color: Colors.purpleAccent,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  )
+                              : Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      if (isPlaying) ...[
-                        const SizedBox(width: 4),
-                        const Icon(Icons.check_circle,
-                            size: 14, color: Colors.purpleAccent),
-                      ]
                     ],
                   ),
                   const SizedBox(height: 4),
@@ -96,10 +103,10 @@ class SongCard extends StatelessWidget {
             ),
 
             if (isPlaying) ...[
-              const SizedBox(width: 16),
-              _buildVisualizer(),
+              const SizedBox(width: 12),
+              _buildVisualizer(context),
             ],
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
 
             // Duration & Actions
             Column(
@@ -128,21 +135,15 @@ class SongCard extends StatelessWidget {
     );
   }
 
-  Widget _buildVisualizer() {
-    return MusicVisualizerV2(
-      barSizes: const [
-        // VisualizerBarSize.s,
-        // VisualizerBarSize.l,
-        VisualizerBarSize.s,
-        VisualizerBarSize.axl,
-        VisualizerBarSize.s,
-        // VisualizerBarSize.l,
-        // VisualizerBarSize.s,
-      ],
-      width: 50,
-      height: 50,
+  Widget _buildVisualizer(BuildContext context) {
+    return const MusicVisualizer(
+      barCount: 5,
+      height: 30,
+      width: 20,
+      barWidth: 2,
+      gap: 1,
       showDots: false,
-      baseColor: color,
+      color: Colors.cyanAccent,
     );
   }
 }
