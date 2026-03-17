@@ -201,7 +201,7 @@ class SearchScreen extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               gradient: LinearGradient(
-                  colors: [color.withOpacity(0.8), Colors.black]),
+                  colors: [color.withValues(alpha: 0.8), Colors.black]),
             ),
           ),
           const SizedBox(width: 16),

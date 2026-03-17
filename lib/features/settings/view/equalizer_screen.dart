@@ -221,7 +221,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
                     color: Colors.transparent,
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.cyan.withOpacity(0.2), blurRadius: 8)
+                          color: Colors.cyan.withValues(alpha: 0.2), blurRadius: 8)
                     ],
                   ),
                 ),

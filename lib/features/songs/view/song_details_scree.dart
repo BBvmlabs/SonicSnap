@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sonic_snap/features/music/widgets/widgets.dart';
 import 'package:sonic_snap/features/songs/widgets/song_art.dart';
 import 'package:sonic_snap/features/songs/widgets/song_detils.dart';
 
@@ -56,27 +55,29 @@ class SongDetailsContent extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.04),
+            color: Colors.white.withValues(alpha: 0.04),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("LOCATION",
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.3), fontSize: 10)),
+                      color: Colors.white.withValues(alpha: 0.3),
+                      fontSize: 10)),
               const SizedBox(height: 6),
               Row(
                 children: [
                   Icon(Icons.folder,
-                      color: Colors.white.withOpacity(0.3), size: 16),
+                      color: Colors.white.withValues(alpha: 0.3), size: 16),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       "/storage/music/${(song['artist'] as String?)?.split('•').first.trim() ?? 'Unknown'}/...",
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.6), fontSize: 12),
+                          color: Colors.white.withValues(alpha: 0.6),
+                          fontSize: 12),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -111,16 +112,16 @@ class SongDetailsContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFB565FF).withOpacity(0.1),
+              color: const Color(0xFFB565FF).withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.edit, color: Color(0xFFB565FF), size: 18),
@@ -136,7 +137,7 @@ class SongDetailsContent extends StatelessWidget {
           ),
           const Spacer(),
           Icon(Icons.chevron_right,
-              color: Colors.white.withOpacity(0.2), size: 18),
+              color: Colors.white.withValues(alpha: 0.2), size: 18),
         ],
       ),
     );
@@ -146,9 +147,9 @@ class SongDetailsContent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04),
+        color: Colors.white.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -160,7 +161,7 @@ class SongDetailsContent extends StatelessWidget {
                   image: song['image'] ??
                       song['artwork'] ??
                       "assets/logo/play_now.png"),
-              const SizedBox(width: 20),
+              const SizedBox(width: 15),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +186,7 @@ class SongDetailsContent extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          // const SizedBox(height: 20),
           SongDetails(song: song, showTitle: false),
           const SizedBox(height: 10),
           _buildActionItem(Icons.edit, "Edit Tags"),

@@ -35,7 +35,7 @@ class SongDetails extends StatelessWidget {
         Text(
           song['album'] ?? "The Fat of the Land",
           style: showTitle
-              ? TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 14)
+              ? TextStyle(color: Colors.white.withValues(alpha: 0.4), fontSize: 14)
               : const TextStyle(
                   color: Colors.white,
                   fontSize: 20,
@@ -49,7 +49,7 @@ class SongDetails extends StatelessWidget {
           child: Text(
             "AUDIO PROPERTIES",
             style: TextStyle(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               fontSize: 12,
               fontWeight: FontWeight.bold,
               letterSpacing: 1.2,
@@ -68,20 +68,20 @@ class SongDetails extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.04),
+            color: Colors.white.withValues(alpha: 0.04),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
           ),
           child: IntrinsicHeight(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Flexible(child: _buildCompactStat("FILE SIZE", "32.4 MB")),
-                VerticalDivider(color: Colors.white.withOpacity(0.1), width: 1),
+                VerticalDivider(color: Colors.white.withValues(alpha: 0.1), width: 1),
                 Flexible(
                     child: _buildCompactStat(
                         "DURATION", song['duration'] ?? "4:42")),
-                VerticalDivider(color: Colors.white.withOpacity(0.1), width: 1),
+                VerticalDivider(color: Colors.white.withValues(alpha: 0.1), width: 1),
                 Flexible(child: _buildCompactStat("TYPE", "Stereo")),
               ],
             ),
@@ -96,9 +96,9 @@ class SongDetails extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.04),
+          color: Colors.white.withValues(alpha: 0.04),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,7 +106,7 @@ class SongDetails extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha: 0.3),
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
               ),
@@ -128,7 +128,7 @@ class SongDetails extends StatelessWidget {
                 Text(
                   unit,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     fontSize: 12,
                   ),
                 ),
@@ -145,7 +145,7 @@ class SongDetails extends StatelessWidget {
       children: [
         Text(label,
             style:
-                TextStyle(color: Colors.white.withOpacity(0.3), fontSize: 9)),
+                TextStyle(color: Colors.white.withValues(alpha: 0.3), fontSize: 9)),
         const SizedBox(height: 4),
         Text(
           value,

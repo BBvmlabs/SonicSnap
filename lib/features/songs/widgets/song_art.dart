@@ -19,7 +19,7 @@ class SongArt extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.5),
+            color: Colors.black.withValues(alpha: 0.5),
             blurRadius: 20,
             offset: const Offset(0, 10),
           )
@@ -31,7 +31,7 @@ class SongArt extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
           margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: const Color(0xFF4A4A4A).withOpacity(0.8),
+            color: const Color(0xFF4A4A4A).withValues(alpha: 0.8),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(

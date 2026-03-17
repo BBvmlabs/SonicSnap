@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sonic_snap/core/app_theme.dart';
 import 'package:sonic_snap/features/auth/widgets/input_widget.dart';
 import 'package:sonic_snap/routes/navigator.dart';
-import 'package:sonic_snap/widgets/appLogo.dart';
+import 'package:sonic_snap/widgets/app_logo.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,7 +16,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   double screenWidth = 0;
   bool isLargeScreen = false;
-  bool isOfflineMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -84,33 +83,12 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Text(
               'Forgot Password?',
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: AppTheme.primaryCyan.withOpacity(0.8),
+                    color: AppTheme.primaryCyan.withValues(alpha: 0.8),
                   ),
             ),
           ),
         ),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "Offline Only Mode",
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Switch(
-              value: isOfflineMode,
-              activeThumbColor: AppTheme.primaryCyan,
-              onChanged: (val) {
-                setState(() => isOfflineMode = val);
-              },
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 32),
         ElevatedButton(
           onPressed: () => navigate(context, "/home-screen"),
           child: const Row(
@@ -122,12 +100,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        OutlinedButton(
-          onPressed: () {},
-          child: const Center(child: Text("Create Account")),
-        ),
-        // _buildSocialLogin(),
       ],
     );
   }

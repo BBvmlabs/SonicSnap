@@ -82,7 +82,7 @@ class StorageSettingsScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                            color: Colors.blueAccent.withOpacity(0.2),
+                            color: Colors.blueAccent.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(8)),
                         child: const Text("35% Full",
                             style: TextStyle(
@@ -211,7 +211,7 @@ class StorageSettingsScreen extends StatelessWidget {
                 children: [
                   _ContentItem(
                       icon: Icons.library_music,
-                      title: "Offline Tracks",
+                      title: "Local Tracks",
                       subtitle: "1,248 Files",
                       size: "12.4 GB",
                       color: Colors.cyan),
@@ -240,13 +240,14 @@ class StorageSettingsScreen extends StatelessWidget {
               child: OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  side: BorderSide(color: Colors.redAccent.withOpacity(0.5)),
+                  side: BorderSide(
+                      color: Colors.redAccent.withValues(alpha: 0.5)),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16)),
                 ),
                 onPressed: () {},
                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                label: const Text("Clear All Downloads",
+                label: const Text("Purge Local Cache",
                     style: TextStyle(
                         color: Colors.redAccent, fontWeight: FontWeight.bold)),
               ),
@@ -297,7 +298,7 @@ class _ContentItem extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(12)),
         child: Icon(icon, color: color, size: 24),
       ),

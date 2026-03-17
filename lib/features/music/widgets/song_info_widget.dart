@@ -34,7 +34,7 @@ class SongInfoWidget extends StatelessWidget {
           description,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 fontSize: isWideScreen ? 24 : 16,
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontWeight: FontWeight.w400,
               ),
           maxLines: 1,

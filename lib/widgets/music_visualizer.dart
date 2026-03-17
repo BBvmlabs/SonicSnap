@@ -131,13 +131,13 @@ class _MusicVisualizerState extends State<MusicVisualizer>
                     end: Alignment.bottomCenter,
                     colors: [
                       widget.color,
-                      widget.color.withOpacity(0.5),
+                      widget.color.withValues(alpha: 0.5),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: widget.color.withOpacity(0.5),
+                      color: widget.color.withValues(alpha: 0.5),
                       blurRadius: widget.barWidth * 2,
                       spreadRadius: 1,
                     ),
@@ -264,7 +264,7 @@ class _MusicVisualizerV2State extends State<MusicVisualizerV2>
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF66FFFF).withOpacity(0.3),
+                          color: const Color(0xFF66FFFF).withValues(alpha: 0.3),
                           blurRadius: 4,
                           spreadRadius: 1,
                         ),
@@ -296,7 +296,7 @@ class _DotsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.white.withOpacity(0.3);
+    final paint = Paint()..color = Colors.white.withValues(alpha: 0.3);
     for (var dot in dots) {
       // Subtle float animation
       double dy = sin(animationValue * 2 * pi + dot.dx) * 5;

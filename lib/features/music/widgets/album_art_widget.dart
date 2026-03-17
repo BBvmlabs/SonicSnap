@@ -21,7 +21,7 @@ class AlbumArtWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.5),
+              color: color.withValues(alpha: 0.5),
               blurRadius: 40,
               spreadRadius: 10,
             ),
@@ -37,8 +37,8 @@ class AlbumArtWidget extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    color.withOpacity(0.8),
-                    color.withOpacity(0.4),
+                    color.withValues(alpha: 0.8),
+                    color.withValues(alpha: 0.4),
                   ],
                 ),
               ),
@@ -46,7 +46,7 @@ class AlbumArtWidget extends StatelessWidget {
                 child: Icon(
                   Icons.music_note,
                   size: 120,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha: 0.8),
                 ),
               ),
             ),

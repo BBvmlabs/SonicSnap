@@ -34,9 +34,9 @@ class ProgressBarWidget extends StatelessWidget {
               overlayRadius: 14,
             ),
             activeTrackColor: color,
-            inactiveTrackColor: Colors.white.withOpacity(0.2),
+            inactiveTrackColor: Colors.white.withValues(alpha: 0.2),
             thumbColor: Colors.white,
-            overlayColor: color.withOpacity(0.3),
+            overlayColor: color.withValues(alpha: 0.3),
           ),
           child: Slider(
             value: currentPosition,
@@ -55,14 +55,14 @@ class ProgressBarWidget extends StatelessWidget {
               Text(
                 _formatDuration(currentPosition),
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontSize: 12,
                 ),
               ),
               Text(
                 _formatDuration(totalDuration),
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: Colors.white.withValues(alpha: 0.7),
                   fontSize: 12,
                 ),
               ),

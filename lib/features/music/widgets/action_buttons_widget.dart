@@ -31,7 +31,7 @@ class _ActionButtonsWidgetState extends State<ActionButtonsWidget> {
           },
           icon: Icon(
             isLiked ? Icons.favorite : Icons.favorite_border,
-            color: isLiked ? Colors.redAccent : Colors.white.withOpacity(0.7),
+            color: isLiked ? Colors.redAccent : Colors.white.withValues(alpha: 0.7),
             size: 28,
           ),
         ),
@@ -45,7 +45,7 @@ class _ActionButtonsWidgetState extends State<ActionButtonsWidget> {
           },
           icon: Icon(
             Icons.shuffle_rounded,
-            color: isShuffled ? widget.color : Colors.white.withOpacity(0.7),
+            color: isShuffled ? widget.color : Colors.white.withValues(alpha: 0.7),
             size: 24,
           ),
         ),
@@ -59,7 +59,7 @@ class _ActionButtonsWidgetState extends State<ActionButtonsWidget> {
           },
           icon: Icon(
             isRepeat ? Icons.repeat_one_rounded : Icons.repeat_rounded,
-            color: isRepeat ? widget.color : Colors.white.withOpacity(0.7),
+            color: isRepeat ? widget.color : Colors.white.withValues(alpha: 0.7),
             size: 24,
           ),
         ),
@@ -71,7 +71,7 @@ class _ActionButtonsWidgetState extends State<ActionButtonsWidget> {
           },
           icon: Icon(
             Icons.more_vert_rounded,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
             size: 24,
           ),
         ),

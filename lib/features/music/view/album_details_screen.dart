@@ -82,7 +82,7 @@ class AlbumDetailsScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.purple.withOpacity(0.2),
+                              color: Colors.purple.withValues(alpha: 0.2),
                               blurRadius: 40,
                               offset: const Offset(0, 20)),
                         ],
@@ -215,12 +215,12 @@ class AlbumDetailsScreen extends StatelessWidget {
         boxShadow: [
           if (!isPrimary)
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4)),
           if (isPrimary)
             BoxShadow(
-                color: const Color(0xFFA855F7).withOpacity(0.4),
+                color: const Color(0xFFA855F7).withValues(alpha: 0.4),
                 blurRadius: 10,
                 offset: const Offset(0, 4)),
         ],
@@ -249,7 +249,7 @@ class AlbumDetailsScreen extends StatelessWidget {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4)),
         ],

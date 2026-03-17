@@ -139,7 +139,7 @@ class _AudioVisualizerWidgetState extends State<AudioVisualizerWidget>
               Text(
                 _formatDuration(widget.currentPosition),
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   fontSize: 12,
                   fontFamily: 'monospace',
                 ),
@@ -147,7 +147,7 @@ class _AudioVisualizerWidgetState extends State<AudioVisualizerWidget>
               Text(
                 _formatDuration(widget.totalDuration),
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   fontSize: 12,
                   fontFamily: 'monospace',
                 ),
@@ -201,15 +201,15 @@ class VisualizerPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            color.withOpacity(0.4),
+            color.withValues(alpha: 0.4),
             color,
-            color.withOpacity(0.4),
+            color.withValues(alpha: 0.4),
           ],
         ).createShader(
             Rect.fromLTWH(x, centerY - height / 2, drawWidth, height));
       } else {
         paint.shader = null;
-        paint.color = Colors.white.withOpacity(0.15);
+        paint.color = Colors.white.withValues(alpha: 0.15);
       }
 
       canvas.drawRRect(topRect, paint);
