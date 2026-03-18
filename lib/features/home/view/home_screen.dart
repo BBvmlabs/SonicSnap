@@ -212,7 +212,6 @@ class _HomeScreenState extends State<HomeScreen>
         return Column(
           children: [
             _buildTopUtilityBar(),
-            _buildLibraryHeader(),
             _buildTableHeadings(),
             const Divider(
                 height: 1, color: Colors.white10, indent: 32, endIndent: 32),
@@ -235,67 +234,11 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildTopUtilityBar() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
-      child: Row(
-        children: [
-          Expanded(
-              child: FilledButton.tonal(
-            onPressed: () {
-              setState(() {
-                _currentNav = NavState.search;
-              });
-            },
-            child: Container(
-              height: 44,
-              decoration: BoxDecoration(
-                color: const Color(0xFF161B22).withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'SEARCH LABORATORY FILES...',
-                  hintStyle: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 11,
-                      letterSpacing: 1.2),
-                  prefixIcon:
-                      Icon(Icons.search, size: 20, color: Colors.grey[800]),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 11),
-                ),
-                style: const TextStyle(color: Colors.white, fontSize: 13),
-              ),
-            ),
-          )),
-          const SizedBox(width: 32),
-          Icon(Icons.cast_connected,
-              color: Colors.cyanAccent.shade400, size: 22),
-          const SizedBox(width: 32),
-          Container(
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white10, width: 1),
-            ),
-            child: const CircleAvatar(
-              radius: 16,
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-              backgroundColor: Color(0xFF161B22),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLibraryHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(40, 56, 40, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Text(
                 'LIBRARY',
@@ -306,48 +249,54 @@ class _HomeScreenState extends State<HomeScreen>
                   letterSpacing: -2.0,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  children: [
-                    Text(
-                      'SORT BY: RECENTLY ADDED',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Icon(Icons.tune_rounded, color: Colors.grey[600], size: 16),
-                  ],
-                ),
-              ),
+              const Spacer(),
+              Expanded(child: _buildSearchZone()),
             ],
           ),
-          const SizedBox(height: 24),
-          TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            indicatorColor: Colors.cyanAccent.shade400,
-            indicatorWeight: 3,
-            indicatorSize: TabBarIndicatorSize.label,
-            labelColor: Colors.cyanAccent.shade400,
-            unselectedLabelColor: Colors.grey[700],
-            dividerColor: Colors.transparent, // We use our own divider
-            labelPadding: const EdgeInsets.only(right: 48),
-            tabAlignment: TabAlignment.start,
-            labelStyle: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 2.0,
-            ),
-            tabs: const [
-              Tab(text: "TRACKS"),
-              Tab(text: "DOWNLOADS"),
-              Tab(text: "ALBUMS"),
-              Tab(text: "ARTISTS"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                indicatorColor: Colors.cyanAccent.shade400,
+                indicatorWeight: 3,
+                indicatorSize: TabBarIndicatorSize.label,
+                labelColor: Colors.cyanAccent.shade400,
+                unselectedLabelColor: Colors.grey[700],
+                dividerColor: Colors.transparent, // We use our own divider
+                labelPadding: const EdgeInsets.only(right: 48),
+                tabAlignment: TabAlignment.start,
+                labelStyle: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2.0,
+                ),
+                tabs: const [
+                  Tab(text: "TRACKS"),
+                  Tab(text: "DOWNLOADS"),
+                  Tab(text: "ALBUMS"),
+                  Tab(text: "ARTISTS"),
+                ],
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    children: [
+                      Text(
+                        'SORT BY: RECENTLY ADDED',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(Icons.tune_rounded,
+                          color: Colors.grey[600], size: 16),
+                    ],
+                  )),
             ],
           ),
         ],
@@ -566,33 +515,21 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildSearchZone() {
-    return GestureDetector(
-      onTap: () {
-        navigate(context, AppRouter.searchScreen);
-      },
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-        color: Colors.black,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          height: 48,
-          decoration: BoxDecoration(
-            color: Colors.grey[900],
-            borderRadius: BorderRadius.circular(24),
+    return TextField(
+        textInputAction: TextInputAction.search,
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary,
+              width: 2,
+            ),
           ),
-          child: Row(
-            children: [
-              Icon(Icons.search, color: Colors.grey[500]),
-              const SizedBox(width: 12),
-              Text(
-                "Search tracks...",
-                style: TextStyle(color: Colors.grey[500], fontSize: 16),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+          hintText: "Search tracks...",
+          hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+          prefixIcon: Icon(Icons.search,
+              color: Theme.of(context).colorScheme.primary, size: 25),
+        ));
   }
 
   Widget _buildStatsAndButtonsRow() {

@@ -5,7 +5,7 @@ class SearchScreen extends StatelessWidget {
   final List<String> recentSearches;
   final List<Map<String, dynamic>> songs;
   const SearchScreen(
-      {super.key,
+      {super.key, 
       required this.isBigScreen,
       required this.recentSearches,
       required this.songs});
