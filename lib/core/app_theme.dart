@@ -3,9 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Brand Colors
-  static const Color primaryPurple = Color(0xFF8E6CEF);
-  static const Color secondaryPurple = Color(0xFFF1EDFF);
   static const Color primaryCyan = Color(0xFF00CFD5);
+  static const Color secondaryCyan = Color(0xFFE0FCFD);
   static const Color greyText = Color(0xFF7F7F7F);
   static const Color darkBg = Color(0xFF080C0D);
   static const Color darkSurface = Color(0xFF15191B);
@@ -16,9 +15,9 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: const ColorScheme.light(
-        primary: primaryPurple,
+        primary: primaryCyan,
         onPrimary: Colors.white,
-        secondary: primaryPurple,
+        secondary: primaryCyan,
         onSecondary: Colors.white,
         surface: Colors.white,
         onSurface: Colors.black,
@@ -72,11 +71,11 @@ class AppTheme {
         ),
       ),
       tabBarTheme: const TabBarThemeData(
-        labelColor: primaryPurple,
+        labelColor: primaryCyan,
         unselectedLabelColor: greyText,
         indicatorSize: TabBarIndicatorSize.label,
         indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(width: 3.0, color: primaryPurple),
+          borderSide: BorderSide(width: 3.0, color: primaryCyan),
         ),
         labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         unselectedLabelStyle:
@@ -96,7 +95,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryPurple,
+          backgroundColor: primaryCyan,
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -111,8 +110,8 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          backgroundColor: secondaryPurple,
-          foregroundColor: primaryPurple,
+          backgroundColor: secondaryCyan,
+          foregroundColor: primaryCyan,
           side: BorderSide.none,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -137,7 +136,7 @@ class AppTheme {
         thickness: 1,
         space: 1,
       ),
-      iconTheme: const IconThemeData(color: primaryPurple, size: 24),
+      iconTheme: const IconThemeData(color: primaryCyan, size: 24),
     );
   }
 
@@ -218,11 +217,11 @@ class AppTheme {
         ),
       ),
       tabBarTheme: const TabBarThemeData(
-        labelColor: primaryPurple,
+        labelColor: primaryCyan,
         unselectedLabelColor: Colors.white60,
         indicatorSize: TabBarIndicatorSize.label,
         indicator: UnderlineTabIndicator(
-          borderSide: BorderSide(width: 3.0, color: primaryPurple),
+          borderSide: BorderSide(width: 3.0, color: primaryCyan),
         ),
         labelStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         unselectedLabelStyle:
@@ -292,7 +291,7 @@ class AppTheme {
         thickness: 1,
         space: 1,
       ),
-      iconTheme: const IconThemeData(color: primaryPurple, size: 24),
+      iconTheme: const IconThemeData(color: primaryCyan, size: 24),
     );
   }
 }

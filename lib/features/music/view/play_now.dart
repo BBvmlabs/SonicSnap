@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/music/widgets/album_art_widget.dart';
 import 'package:sonic_snap/features/music/widgets/song_info_widget.dart';
@@ -6,8 +7,10 @@ import 'package:sonic_snap/features/music/widgets/playback_controls_widget.dart'
 import 'package:sonic_snap/features/music/widgets/action_buttons_widget.dart';
 import 'package:sonic_snap/features/music/widgets/audio_quality_badge.dart';
 import 'package:sonic_snap/features/music/widgets/mini_player_widget.dart';
+import 'package:sonic_snap/widgets/build_tag.dart';
 
 class PlayNowScreen extends StatefulWidget {
+  final int selectedSongIndex;
   final List<Map<String, dynamic>> songs;
   final bool isExpanded;
   final String title;
@@ -22,6 +25,7 @@ class PlayNowScreen extends StatefulWidget {
   final bool isBigScreen;
 
   const PlayNowScreen({
+    required this.selectedSongIndex,
     required this.songs,
     required this.isExpanded,
     super.key,
@@ -42,11 +46,12 @@ class PlayNowScreen extends StatefulWidget {
 }
 
 class _PlayNowScreenState extends State<PlayNowScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late bool isExpanded;
   double currentPosition = 55; // in seconds
   double totalDuration = 258; // in seconds (4:18)
   late AnimationController _animationController;
+  late AnimationController _visualizerController;
 
   @override
   void initState() {
@@ -58,6 +63,13 @@ class _PlayNowScreenState extends State<PlayNowScreen>
     );
     if (isExpanded) {
       _animationController.forward();
+    }
+    _visualizerController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    if (widget.isPlaying) {
+      _visualizerController.repeat();
     }
   }
 
@@ -74,11 +86,19 @@ class _PlayNowScreenState extends State<PlayNowScreen>
         }
       });
     }
+    if (widget.isPlaying != oldWidget.isPlaying) {
+      if (widget.isPlaying) {
+        _visualizerController.repeat();
+      } else {
+        _visualizerController.stop();
+      }
+    }
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _visualizerController.dispose();
     super.dispose();
   }
 
@@ -155,14 +175,22 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                 Colors.black,
                 Colors.black,
               ],
-              stops: const [0.0, 0.3, 1.0],
+              stops: const [0.0, 0.5, 1.0],
             ),
           ),
           child: SafeArea(
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final isWideScreen = constraints.maxWidth > 900;
-                return isWideScreen ? _buildWideLayout() : _buildNarrowLayout();
+                if (isWideScreen) {
+                  return Column(
+                    children: [
+                      Expanded(child: _buildDesktopLayout()),
+                      _buildWidePlayerBar(isMini: false, showQueue: false),
+                    ],
+                  );
+                }
+                return _buildMobileLayout();
               },
             ),
           ),
@@ -211,7 +239,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
     );
   }
 
-  Widget _buildNarrowLayout() {
+  Widget _buildMobileLayout() {
     return Column(
       children: [
         _buildAppBar(),
@@ -296,275 +324,249 @@ class _PlayNowScreenState extends State<PlayNowScreen>
     );
   }
 
-  Widget _buildWideLayout() {
-    return Container(
-      color: const Color(0xFF080C11).withValues(alpha: 0.95),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-
-          // Main Center Content
-          Expanded(
+  Widget _buildDesktopLayout() {
+    final nowPlaying = widget.songs[widget.selectedSongIndex];
+    return Row(
+      children: [
+        // Left Side: Now Playing Info
+        Expanded(
+          flex: 6,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 60),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildPlayerHeader(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 32),
-                        // Album Art with Badge
-                        _buildMainNowPlaying(),
-
-                        const SizedBox(height: 48),
-
-                        // Artist & Title
-                        Text(
-                          widget.title.toUpperCase(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 52,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -1.0,
-                          ),
-                        ),
-                        Text(
-                          widget.description.toUpperCase(),
-                          style: TextStyle(
-                            color: Colors.cyanAccent.shade400,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 2.0,
-                          ),
-                        ),
-
-                        const SizedBox(height: 32),
-
-                        // Stats Row (Format, Bitrate, Sample Rate)
-                        _buildTechnicalStats(),
-
-                        const SizedBox(height: 48),
-
-                        // Visualizer
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 100),
-                          child: AudioVisualizerWidget(
-                            currentPosition: currentPosition,
-                            totalDuration: totalDuration,
-                            color: Colors.cyanAccent.shade400,
-                            isPlaying: widget.isPlaying,
-                          ),
-                        ),
-
-                        const SizedBox(height: 48),
-
-                        // Controls
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 100),
-                          child: PlaybackControlsWidget(
-                            isPlaying: widget.isPlaying,
-                            onPlayPause: _togglePlayPause,
-                            onPrevious: widget.onPrevious,
-                            onNext: widget.onNext,
-                            color: Colors.cyanAccent.shade400,
-                          ),
-                        ),
-
-                        const SizedBox(height: 48),
-                      ],
-                    ),
-                  ),
+                // Tag Section
+                Row(
+                  children: [
+                    buildTag('NOW PLAYING',
+                        color: Colors.white.withValues(alpha: 0.5),
+                        textColor: Colors.black),
+                    const SizedBox(width: 12),
+                    buildTag('HI-RES 192KHZ'),
+                    const SizedBox(width: 12),
+                    buildTag('STUDIO MASTER'),
+                  ],
                 ),
-                // Unified Bottom Bar
-                _buildWidePlayerBar(isMini: false),
+                const SizedBox(height: 48),
+
+                // Artwork & Large Title
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Large Artwork
+                    Container(
+                      width: 420,
+                      height: 420,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        image: DecorationImage(
+                          image: AssetImage(nowPlaying['image']),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 64),
+
+                    // Title and Artist Info
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 20),
+                          Text(
+                            nowPlaying['title'].toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 72,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -2,
+                              height: 1.1,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            nowPlaying['description']?.toUpperCase() ??
+                                'ARCHITECTS OF VOID',
+                            style: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 28,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 4.0,
+                            ),
+                          ),
+                          const SizedBox(height: 64),
+                          // Specific visualizer for this section
+                          _buildBarVisualizer(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
 
-  Widget _buildPlayerHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(48, 32, 48, 0),
-      child: Row(
-        children: [
-          Row(
+        // Right Side: Play Queue List
+        Container(
+          width: 480,
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.2),
+            border: const Border(left: BorderSide(color: Colors.white10)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 8,
-                height: 8,
-                decoration: const BoxDecoration(
-                  color: Colors.cyanAccent,
-                  shape: BoxShape.circle,
+              // Queue Header
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Play Queue',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.cleaning_services_rounded,
+                                  color: Colors.white54, size: 20),
+                              tooltip: 'Clear Queue',
+                            ),
+                            IconButton(
+                              onPressed: () {},
+                              icon: Icon(Icons.playlist_add_rounded,
+                                  color: widget.color, size: 24),
+                              tooltip: 'Save Playlist',
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'ACTIVE SESSION: SEQUENCE 04',
+                      style: TextStyle(
+                        color: widget.color,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 2.0,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 12),
-              Text(
-                'SYSTEM ONLINE',
-                style: TextStyle(
-                  color: Colors.cyanAccent.shade400,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2.0,
+
+              // Up Next Label
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
+                child: Text(
+                  'UP NEXT',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 12,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 3.0,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Queue List Items
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: widget.songs.length - 1,
+                  itemBuilder: (context, index) {
+                    // Skip currently playing song for the "Up Next" list
+                    final songIndex = (widget.selectedSongIndex + index + 1) %
+                        widget.songs.length;
+                    final song = widget.songs[songIndex];
+                    return _buildQueueItem(song, index + 1);
+                  },
                 ),
               ),
             ],
-          ),
-          const Spacer(),
-          Container(
-            width: 300,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'SEARCH FREQUENCY...',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                ),
-                Icon(Icons.search, size: 16, color: Colors.grey[800]),
-              ],
-            ),
-          ),
-          const SizedBox(width: 32),
-          Icon(Icons.notifications_none,
-              color: Colors.white.withValues(alpha: 0.7), size: 22),
-          const SizedBox(width: 24),
-          Icon(Icons.bar_chart,
-              color: Colors.white.withValues(alpha: 0.7), size: 22),
-          const SizedBox(width: 24),
-          const CircleAvatar(
-            radius: 16,
-            backgroundColor: Color(0xFF161B22),
-            child: Icon(Icons.person, color: Colors.white70, size: 20),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMainNowPlaying() {
-    return Center(
-      child: Stack(
-        alignment: Alignment.topRight,
-        children: [
-          Container(
-            width: 450,
-            height: 450,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.cyanAccent.shade400.withValues(alpha: 0.1),
-                  blurRadius: 100,
-                  spreadRadius: -20,
-                ),
-              ],
-              image: DecorationImage(
-                image: AssetImage(widget.image),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(24),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xFF0D1117).withValues(alpha: 0.8),
-                borderRadius: BorderRadius.circular(2),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'HI-RES',
-                    style: TextStyle(
-                      color: Colors.cyanAccent.shade400,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    '24-BIT',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTechnicalStats() {
-    return Container(
-      width: 450,
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.02),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildStatItem('FORMAT', 'FLAC'),
-          _buildStatItem('BITRATE', '1411 KBPS'),
-          _buildStatItem('SAMPLE RATE', '44.1 KHZ'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[700],
-            fontSize: 9,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.5,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.0,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildWidePlayerBar({required bool isMini}) {
+  Widget _buildQueueItem(Map<String, dynamic> song, int displayIndex) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.03),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: AssetImage(song['image']),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  song['title'].toUpperCase(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w800,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  song['description']?.toUpperCase() ?? 'THE PRODIGY',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            song['duration'] ?? '04:15',
+            style: TextStyle(
+              color: Colors.grey[700],
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Icon(Icons.drag_indicator_rounded, color: Colors.grey[800], size: 18),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWidePlayerBar({required bool isMini, bool showQueue = true}) {
     return Container(
       height: 100,
       decoration: BoxDecoration(
@@ -621,8 +623,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            _buildTag('24-BIT / 96KHZ',
-                                color: Colors.purple.shade900),
+                            _buildTag('24-BIT / 96KHZ', color: widget.color),
                             const SizedBox(width: 4),
                             _buildTag('HI-RES'),
                           ],
@@ -641,45 +642,41 @@ class _PlayNowScreenState extends State<PlayNowScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (isMini) ...[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                          icon: const Icon(Icons.shuffle,
-                              size: 18, color: Colors.white54),
-                          onPressed: () {}),
-                      IconButton(
-                          icon: const Icon(Icons.skip_previous,
-                              color: Colors.white),
-                          onPressed: widget.onPrevious),
-                      const SizedBox(width: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border:
-                              Border.all(color: Colors.cyanAccent, width: 2),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                              widget.isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: Colors.cyanAccent),
-                          onPressed: widget.onPlayPause,
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        icon: const Icon(Icons.shuffle,
+                            size: 18, color: Colors.white54),
+                        onPressed: () {}),
+                    IconButton(
+                        icon: const Icon(Icons.skip_previous,
+                            color: Colors.white),
+                        onPressed: widget.onPrevious),
+                    const SizedBox(width: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: widget.color, width: 2),
                       ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                          icon:
-                              const Icon(Icons.skip_next, color: Colors.white),
-                          onPressed: widget.onNext),
-                      IconButton(
-                          icon: const Icon(Icons.repeat,
-                              size: 18, color: Colors.white54),
-                          onPressed: () {}),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                ],
+                      child: IconButton(
+                        icon: Icon(
+                            widget.isPlaying ? Icons.pause : Icons.play_arrow,
+                            color: widget.color),
+                        onPressed: widget.onPlayPause,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                        icon: const Icon(Icons.skip_next, color: Colors.white),
+                        onPressed: widget.onNext),
+                    IconButton(
+                        icon: const Icon(Icons.repeat,
+                            size: 18, color: Colors.white54),
+                        onPressed: () {}),
+                  ],
+                ),
+                const SizedBox(height: 4),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -734,8 +731,10 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                 ),
                 const SizedBox(width: 24),
                 _buildToolItem(Icons.bar_chart, 'SPECTRUM', isMini),
-                const SizedBox(width: 24),
-                _buildToolItem(Icons.playlist_play, 'QUEUE', isMini),
+                if (showQueue) ...[
+                  const SizedBox(width: 24),
+                  _buildToolItem(Icons.playlist_play, 'QUEUE', isMini),
+                ],
               ],
             ),
           ),
@@ -750,7 +749,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
         trackHeight: 2,
         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 0),
         overlayShape: const RoundSliderOverlayShape(overlayRadius: 0),
-        activeTrackColor: Colors.cyanAccent.shade400,
+        activeTrackColor: widget.color,
         inactiveTrackColor: Colors.white.withValues(alpha: 0.1),
       ),
       child: Slider(value: 0.4, onChanged: (v) {}),
@@ -759,17 +758,17 @@ class _PlayNowScreenState extends State<PlayNowScreen>
 
   Widget _buildToolItem(IconData icon, String label, bool isMini) {
     bool isCyan = icon == Icons.bar_chart;
+    final color = isCyan ? widget.color : Colors.grey[600];
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon,
-            color: isCyan ? Colors.cyanAccent : Colors.grey[600], size: 20),
+        Icon(icon, color: color, size: 20),
         if (!isMini) ...[
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: isCyan ? Colors.cyanAccent : Colors.grey[600],
+              color: color,
               fontSize: 8,
               fontWeight: FontWeight.bold,
             ),
@@ -795,6 +794,47 @@ class _PlayNowScreenState extends State<PlayNowScreen>
           fontWeight: FontWeight.bold,
         ),
       ),
+    );
+  }
+
+  Widget _buildBarVisualizer() {
+    return AnimatedBuilder(
+      animation: _visualizerController,
+      builder: (context, child) {
+        return SizedBox(
+          height: 80,
+          width: 600,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: List.generate(40, (index) {
+              // Create dynamic height based on animation and index
+              final t = _visualizerController.value;
+              final sinValue = (sin((t * 2 * pi) + (index * 0.5)) + 1) / 2;
+              final variation = (index % 3 + 1) * 20.0 * sinValue;
+              final baseHeight = (index % 5 + 1) * 8.0;
+              final height = widget.isPlaying
+                  ? (baseHeight + variation).clamp(10.0, 70.0)
+                  : baseHeight;
+
+              return Container(
+                width: 8,
+                height: height,
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  color: index == 15 || index == 30 || index == 5
+                      ? widget.color
+                      : Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              );
+            }),
+          ),
+        );
+      },
     );
   }
 }

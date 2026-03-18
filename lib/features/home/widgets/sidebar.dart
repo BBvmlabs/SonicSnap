@@ -48,25 +48,26 @@ class Sidebar extends StatelessWidget {
           ),
           const SizedBox(height: 72),
           _buildSidebarItem(
-              Icons.home_outlined, 'HOME', currentNav == NavState.library, () {
+              Icons.home_outlined, 'Home', currentNav == NavState .library, () {
             onNavChanged(NavState.library);
           }),
-          _buildSidebarItem(Icons.explore_outlined, 'DISCOVERY',
-              currentNav == NavState.artist, () {
+          _buildSidebarItem(
+              Icons.album_outlined, 'Album', currentNav == NavState.artist, () {
             onNavChanged(NavState.artist);
           }),
-          _buildSidebarItem(Icons.science_outlined, 'LABORATORY',
-              currentNav == NavState.laboratory, () {
-            onNavChanged(NavState.laboratory);
+          _buildSidebarItem(Icons.library_music_outlined, 'Tracks',
+              currentNav == NavState.library, () {
+            onNavChanged(NavState.library);
           }),
           _buildSidebarItem(
-              Icons.search, 'Search', currentNav == NavState.queue, () {
-            onNavChanged(NavState.queue);
-          }),
-          _buildSidebarItem(
-              Icons.search_outlined, 'SEARCH', currentNav == NavState.search,
+              Icons.explore_outlined, 'Artist', currentNav == NavState.artist,
               () {
-            onNavChanged(NavState.search);
+            onNavChanged(NavState.artist);
+          }),
+          _buildSidebarItem(
+              Icons.queue_music_outlined, 'Queue', currentNav == NavState.queue,
+              () {
+            onNavChanged(NavState.queue);
           }),
           const Spacer(),
           _buildSidebarItem(Icons.settings_outlined, 'SETTINGS', false, () {}),

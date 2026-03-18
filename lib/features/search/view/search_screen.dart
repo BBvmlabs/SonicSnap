@@ -12,6 +12,7 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isBigScreen = MediaQuery.of(context).size.width > 900;
     return Scaffold(
       backgroundColor: const Color(0xFF0F0F0F),
       body: isBigScreen ? _buildWideSearchView() : _buildMobileSearchView(),

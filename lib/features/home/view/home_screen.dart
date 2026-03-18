@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-enum NavState { library, artist, laboratory, queue, search }
+enum NavState { library, artist, queue, search }
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
@@ -127,10 +127,10 @@ class _HomeScreenState extends State<HomeScreen>
         controller: _tabController,
         isScrollable: true,
         indicatorWeight: 3,
-        labelColor: Colors.purpleAccent,
+        labelColor: Theme.of(context).colorScheme.primary,
         unselectedLabelColor: Colors.grey,
         labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
         tabs: const [
           Tab(text: "Tracks"),
@@ -221,10 +221,8 @@ class _HomeScreenState extends State<HomeScreen>
         );
       case NavState.artist:
         return ArtistView(songs: _songs, isBigScreen: isBigScreen);
-      case NavState.laboratory:
-        return _buildLaboratoryView();
       case NavState.queue:
-        return _buildQueueView();
+        return ArtistView(songs: _songs, isBigScreen: isBigScreen);
       case NavState.search:
         return SearchScreen(
           isBigScreen: isBigScreen,
@@ -240,6 +238,12 @@ class _HomeScreenState extends State<HomeScreen>
       child: Row(
         children: [
           Expanded(
+              child: FilledButton.tonal(
+            onPressed: () {
+              setState(() {
+                _currentNav = NavState.search;
+              });
+            },
             child: Container(
               height: 44,
               decoration: BoxDecoration(
@@ -261,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: const TextStyle(color: Colors.white, fontSize: 13),
               ),
             ),
-          ),
+          )),
           const SizedBox(width: 32),
           Icon(Icons.cast_connected,
               color: Colors.cyanAccent.shade400, size: 22),
@@ -536,6 +540,7 @@ class _HomeScreenState extends State<HomeScreen>
               right: 0,
               bottom: 0,
               child: PlayNowScreen(
+                selectedSongIndex: _selectedSongIndex,
                 isBigScreen: isBigScreen,
                 songs: _songs,
                 isExpanded: isPlayerExpanded,
@@ -663,538 +668,6 @@ class _HomeScreenState extends State<HomeScreen>
             },
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildLaboratoryView() {
-    final song = _songs[_selectedSongIndex];
-    return Column(
-      children: [
-        // Top Bar
-        Padding(
-          padding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
-          child: Row(
-            children: [
-              Row(
-                children: [
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: const BoxDecoration(
-                        color: Colors.cyanAccent, shape: BoxShape.circle),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'SYSTEM ONLINE',
-                    style: TextStyle(
-                      color: Colors.cyanAccent.shade400,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 2.0,
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              _buildLaboratorySearch(),
-              const SizedBox(width: 32),
-              const Icon(Icons.notifications_outlined,
-                  color: Colors.white70, size: 20),
-              const SizedBox(width: 24),
-              const Icon(Icons.bar_chart_rounded,
-                  color: Colors.white70, size: 20),
-              const SizedBox(width: 24),
-              const Icon(Icons.account_circle_outlined,
-                  color: Colors.white70, size: 20),
-            ],
-          ),
-        ),
-
-        // Main Player Content
-        Expanded(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Album Art with Glow
-                Container(
-                  width: 400,
-                  height: 400,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(
-                      image: AssetImage(song['image']),
-                      fit: BoxFit.cover,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.5),
-                        blurRadius: 40,
-                        spreadRadius: 10,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 64),
-                // Title and Artist
-                Text(
-                  song['title'].toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 48,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -1,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'NEURAL NETWORK × VOID_RUNNER',
-                  style: TextStyle(
-                    color: Colors.cyanAccent.shade400,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 48),
-                // Technical Metadata Row
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF161B22).withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildTechTag('FORMAT', 'FLAC'),
-                      _buildTechDivider(),
-                      _buildTechTag('BITRATE', '1411 KBPS'),
-                      _buildTechDivider(),
-                      _buildTechTag('SAMPLE RATE', '44.1 KHZ'),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 64),
-                // Visualizer
-                _buildBarVisualizer(),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLaboratorySearch() {
-    return Container(
-      width: 300,
-      height: 40,
-      decoration: BoxDecoration(
-        color: const Color(0xFF161B22).withValues(alpha: 0.8),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'SEARCH FREQUENCY...',
-          hintStyle: TextStyle(
-              color: Colors.grey[800], fontSize: 10, letterSpacing: 1.2),
-          suffixIcon: Icon(Icons.search, size: 16, color: Colors.grey[800]),
-          border: InputBorder.none,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        ),
-        style: const TextStyle(color: Colors.white, fontSize: 12),
-      ),
-    );
-  }
-
-  Widget _buildTechTag(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 9,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.0,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 13,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTechDivider() {
-    return Container(
-      height: 24,
-      width: 1,
-      margin: const EdgeInsets.symmetric(horizontal: 24),
-      color: Colors.white10,
-    );
-  }
-
-  Widget _buildBarVisualizer() {
-    return SizedBox(
-      height: 80,
-      width: 600,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: List.generate(40, (index) {
-          final height = (index % 5 + 1) * 10.0 + (index % 3) * 15.0;
-          return Container(
-            width: 8,
-            height: height,
-            margin: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: index == 15 || index == 30
-                  ? Colors.cyanAccent
-                  : Colors.cyanAccent.shade700.withValues(alpha: 0.3),
-              borderRadius: BorderRadius.circular(2),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget _buildQueueView() {
-    final nowPlaying = _songs[_selectedSongIndex];
-    return Row(
-      children: [
-        // Main Queue Content
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(60),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Play Queue',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 48,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'LABORATORY SESSION 04: SEQUENCE',
-                          style: TextStyle(
-                            color: Colors.cyanAccent.shade400,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 2.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.white10),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 16),
-                          ),
-                          child: const Text('CLEAR QUEUE',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                        const SizedBox(width: 16),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.cyanAccent.shade400,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 16),
-                          ),
-                          child: const Text('SAVE PLAYLIST',
-                              style: TextStyle(
-                                  fontSize: 11, fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 64),
-                // Now Playing Card
-                Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF161B22).withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white10),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 280,
-                        height: 280,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: AssetImage(nowPlaying['image']),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 48),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                buildTag('NOW PLAYING',
-                                    color: Colors.purple.shade900),
-                                const SizedBox(width: 12),
-                                buildTag('HI-RES 192KHZ'),
-                              ],
-                            ),
-                            const SizedBox(height: 24),
-                            Text(
-                              nowPlaying['title'].toUpperCase(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 64,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: -1,
-                              ),
-                            ),
-                            Text(
-                              'ARCHITECTS OF VOID',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 2.0,
-                              ),
-                            ),
-                            const SizedBox(height: 48),
-                            _buildBarVisualizer(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 64),
-                // Up Next Section
-                const Text(
-                  'UP NEXT',
-                  style: TextStyle(
-                    color: Colors.white24,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 4.0,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    final song = _songs[(index + 1) % _songs.length];
-                    return _buildNextTrackItem(song);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-        // Right Panel (Playlists/History)
-        Container(
-          width: 300,
-          decoration: const BoxDecoration(
-            border: Border(left: BorderSide(color: Colors.white10)),
-          ),
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'SAVED PLAYLISTS',
-                style: TextStyle(
-                  color: Colors.cyanAccent,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              const SizedBox(height: 24),
-              _buildRightPanelItem(Icons.science_outlined, 'LABORATORY_MIX_01'),
-              _buildRightPanelItem(
-                  Icons.nights_stay_outlined, 'NIGHT_DRIVE_NEURAL'),
-              _buildRightPanelItem(Icons.waves_rounded, 'PRECISION_FOCUS'),
-              const SizedBox(height: 48),
-              const Text(
-                'HISTORY',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              const SizedBox(height: 24),
-              _buildHistoryItem(_songs[1], '24 MINS AGO'),
-              _buildHistoryItem(_songs[2], '1 HOUR AGO'),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNextTrackItem(Map<String, dynamic> song) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.02),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.drag_indicator_rounded, color: Colors.white12),
-          const SizedBox(width: 24),
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              image: DecorationImage(
-                image: AssetImage(song['image']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(width: 24),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  song['title'].toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                Text(
-                  'LOOMING STATIC',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          buildTag('FLAC'),
-          const SizedBox(width: 32),
-          Text(
-            song['duration'] ?? '04:12',
-            style: TextStyle(color: Colors.grey[600], fontSize: 13),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRightPanelItem(IconData icon, String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Icon(icon, color: Colors.white70, size: 18),
-          ),
-          const SizedBox(width: 16),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 11,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.0,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHistoryItem(Map<String, dynamic> song, String time) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              image: DecorationImage(
-                image: AssetImage(song['image']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                song['title'].toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.white54,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              Text(
-                time,
-                style: TextStyle(
-                  color: Colors.grey[800],
-                  fontSize: 9,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

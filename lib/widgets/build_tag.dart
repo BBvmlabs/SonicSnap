@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget buildTag(String label, {Color? color}) {
+Widget buildTag(String label, {Color? color, Color? textColor}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
@@ -10,8 +10,8 @@ Widget buildTag(String label, {Color? color}) {
       ),
       child: Text(
         label,
-        style: const TextStyle(
-          color: Colors.white38,
+        style: TextStyle(
+          color: textColor ?? Colors.white38,
           fontSize: 9,
           fontWeight: FontWeight.w900,
           letterSpacing: 1.0,
