@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sonic_snap/features/artist/view/artist_view.dart';
+import 'package:sonic_snap/features/home/widgets/sidebar.dart';
 import 'package:sonic_snap/features/music/view/play_now.dart';
+import 'package:sonic_snap/features/search/view/search_screen.dart';
 import 'package:sonic_snap/features/music/widgets/widgets.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
 
 import 'package:sonic_snap/routes/navigator.dart';
 import 'package:sonic_snap/routes/router.dart';
+import 'package:sonic_snap/widgets/build_tag.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -185,7 +189,14 @@ class _HomeScreenState extends State<HomeScreen>
     return Row(
       children: [
         // 1. Fixed Sidebar Navigation
-        _buildSidebar(),
+        Sidebar(
+          currentNav: _currentNav,
+          onNavChanged: (nav) {
+            setState(() {
+              _currentNav = nav;
+            });
+          },
+        ),
 
         // 2. Main Content Area
         Expanded(
@@ -209,119 +220,18 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         );
       case NavState.artist:
-        return _buildArtistView();
+        return ArtistView(songs: _songs, isBigScreen: isBigScreen);
       case NavState.laboratory:
         return _buildLaboratoryView();
       case NavState.queue:
         return _buildQueueView();
       case NavState.search:
-        return _buildSearchView();
+        return SearchScreen(
+          isBigScreen: isBigScreen,
+          songs: _songs,
+          recentSearches: const ['Techno Bunker', 'Hans Zimmer'],
+        );
     }
-  }
-
-  Widget _buildSidebar() {
-    return Container(
-      width: 260,
-      color: const Color(0xFF080C11),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 48),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'VIBEENGINE',
-                  style: TextStyle(
-                    color: Colors.cyanAccent.shade400,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-                Text(
-                  'SONIC LABORATORY',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 3.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 72),
-          _buildSidebarItem(
-              Icons.home_outlined, 'HOME', _currentNav == NavState.library, () {
-            setState(() => _currentNav = NavState.library);
-          }),
-          _buildSidebarItem(Icons.explore_outlined, 'DISCOVERY',
-              _currentNav == NavState.artist, () {
-            setState(() => _currentNav = NavState.artist);
-          }),
-          _buildSidebarItem(Icons.science_outlined, 'LABORATORY',
-              _currentNav == NavState.laboratory, () {
-            setState(() => _currentNav = NavState.laboratory);
-          }),
-          _buildSidebarItem(Icons.queue_music_outlined, 'QUEUE',
-              _currentNav == NavState.queue, () {
-            setState(() => _currentNav = NavState.queue);
-          }),
-          _buildSidebarItem(
-              Icons.search_outlined, 'SEARCH', _currentNav == NavState.search,
-              () {
-            setState(() => _currentNav = NavState.search);
-          }),
-          const Spacer(),
-          _buildSidebarItem(Icons.settings_outlined, 'SETTINGS', false, () {}),
-          _buildSidebarItem(
-              Icons.help_outline_rounded, 'SUPPORT', false, () {}),
-          const SizedBox(height: 100),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSidebarItem(
-      IconData icon, String label, bool isSelected, VoidCallback onTap) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        border: isSelected
-            ? Border(
-                left: BorderSide(
-                  color: Colors.cyanAccent.shade400,
-                  width: 4,
-                ),
-              )
-            : null,
-      ),
-      child: ListTile(
-        onTap: onTap,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 32),
-        leading: Icon(
-          icon,
-          color: isSelected ? Colors.cyanAccent.shade400 : Colors.grey[600],
-          size: 22,
-        ),
-        title: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.cyanAccent.shade400 : Colors.grey[600],
-            fontSize: 12,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 2.0,
-          ),
-        ),
-        dense: true,
-        tileColor: isSelected
-            ? Colors.cyanAccent.shade400.withValues(alpha: 0.05)
-            : null,
-      ),
-    );
   }
 
   Widget _buildTopUtilityBar() {
@@ -447,11 +357,9 @@ class _HomeScreenState extends State<HomeScreen>
       child: Row(
         children: [
           SizedBox(width: 50, child: Text('#', style: _headingStyle)),
-          Expanded(
-              flex: 5, child: Text('TRACK DETAILS', style: _headingStyle)),
+          Expanded(flex: 5, child: Text('TRACK DETAILS', style: _headingStyle)),
           Expanded(flex: 3, child: Text('ALBUM', style: _headingStyle)),
-          Expanded(
-              flex: 2, child: Text('DURATION', style: _headingStyle)),
+          Expanded(flex: 2, child: Text('DURATION', style: _headingStyle)),
           SizedBox(
               width: 120,
               child: Text('ENCODING',
@@ -587,9 +495,9 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      _buildTag('FLAC'),
+                      buildTag('FLAC'),
                       const SizedBox(width: 8),
-                      _buildTag('24-BIT', color: Colors.purple.shade900),
+                      buildTag('24-BIT', color: Colors.purple.shade900),
                     ],
                   ),
                 ),
@@ -598,26 +506,6 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         );
       },
-    );
-  }
-
-  Widget _buildTag(String label, {Color? color}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-      decoration: BoxDecoration(
-        color: color ?? Colors.teal.shade900.withValues(alpha: 0.3),
-        border: Border.all(color: Colors.white10),
-        borderRadius: BorderRadius.circular(3),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white38,
-          fontSize: 9,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 1.0,
-        ),
-      ),
     );
   }
 
@@ -776,391 +664,6 @@ class _HomeScreenState extends State<HomeScreen>
           );
         },
       ),
-    );
-  }
-
-  Widget _buildArtistView() {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Artist Hero Section
-          Stack(
-            children: [
-              Container(
-                height: 450,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(_songs[0]['image']),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                  ),
-                ),
-                foregroundDecoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.2),
-                      Colors.black.withValues(alpha: 0.8),
-                      const Color(0xFF0D1117),
-                    ],
-                    stops: const [0.0, 0.6, 1.0],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 40,
-                bottom: 60,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.cyanAccent.shade700
-                                .withValues(alpha: 0.2),
-                            border:
-                                Border.all(color: Colors.cyanAccent.shade400),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: const Row(
-                            children: [
-                              Text('VERIFIED ARTIST',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 9,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(width: 8),
-                              Icon(Icons.check_circle,
-                                  color: Colors.cyanAccent, size: 12),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'The Prodigy',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 84,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Text(
-                          '2.4M MONTHLY LISTENERS',
-                          style: TextStyle(
-                            color: Colors.cyanAccent.shade400,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 2.0,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Container(
-                              width: 3, height: 3, color: Colors.grey[700]),
-                        ),
-                        Text(
-                          'Braintree, Essex, UK',
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
-                    Row(
-                      children: [
-                        ElevatedButton.icon(
-                          onPressed: () {},
-                          icon: const Icon(Icons.play_arrow_rounded, size: 28),
-                          label: const Text('SHUFFLE PLAY'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.cyanAccent.shade400,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 20),
-                            textStyle: const TextStyle(
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 1.5,
-                                fontSize: 13),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        OutlinedButton(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.white10),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 32, vertical: 20),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30)),
-                          ),
-                          child: const Text('FOLLOW',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 1.5,
-                                  fontSize: 13)),
-                        ),
-                        const SizedBox(width: 16),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.share_outlined,
-                              color: Colors.white, size: 24),
-                          padding: const EdgeInsets.all(16),
-                          style: IconButton.styleFrom(
-                            backgroundColor: Colors.white10,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          // Content Tabs (Mocking the Discography layout)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Top Tracks
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Top Tracks',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              'VIEW ALL',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          final song = _songs[index % _songs.length];
-                          return _buildArtistTrackItem(index + 1, song);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 60),
-                // Discography
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Discography',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              'SEE DISCOGRAPHY',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                      GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20,
-                          childAspectRatio: 0.75,
-                        ),
-                        itemCount: 4,
-                        itemBuilder: (context, index) {
-                          return _buildAlbumCard(index);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 150),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildArtistTrackItem(int index, Map<String, dynamic> song) {
-    return Container(
-      height: 80,
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 40,
-            child: Text(
-              index.toString().padLeft(2, '0'),
-              style: TextStyle(color: Colors.grey[800], fontSize: 12),
-            ),
-          ),
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              image: DecorationImage(
-                image: AssetImage(song['image']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  song['title'],
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                Text(
-                  'THE FAT OF THE LAND',
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Row(
-            children: [
-              _buildTag('FLAC'),
-              const SizedBox(width: 8),
-              if (index % 2 == 0)
-                _buildTag('24-BIT', color: Colors.purple.shade900),
-            ],
-          ),
-          const SizedBox(width: 40),
-          Text(
-            '382,102,492',
-            style: TextStyle(color: Colors.grey[700], fontSize: 12),
-          ),
-          const SizedBox(width: 40),
-          Text(
-            song['duration'],
-            style: TextStyle(color: Colors.grey[700], fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAlbumCard(int index) {
-    final titles = [
-      "The Fat of the Land",
-      "Experience",
-      "Always Outnumbered",
-      "Invaders Must Die"
-    ];
-    final years = ["1997", "1992", "2004", "2009"];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              image: DecorationImage(
-                image: AssetImage(_songs[index % _songs.length]['image']),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          titles[index],
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-        ),
-        Text(
-          '${years[index]} • ALBUM',
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.0,
-          ),
-        ),
-      ],
     );
   }
 
@@ -1465,10 +968,10 @@ class _HomeScreenState extends State<HomeScreen>
                           children: [
                             Row(
                               children: [
-                                _buildTag('NOW PLAYING',
+                                buildTag('NOW PLAYING',
                                     color: Colors.purple.shade900),
                                 const SizedBox(width: 12),
-                                _buildTag('HI-RES 192KHZ'),
+                                buildTag('HI-RES 192KHZ'),
                               ],
                             ),
                             const SizedBox(height: 24),
@@ -1614,7 +1117,7 @@ class _HomeScreenState extends State<HomeScreen>
               ],
             ),
           ),
-          _buildTag('FLAC'),
+          buildTag('FLAC'),
           const SizedBox(width: 32),
           Text(
             song['duration'] ?? '04:12',
@@ -1691,293 +1194,6 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchView() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Top Logo/Icon row
-        Padding(
-          padding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'VIBEENGINE',
-                style: TextStyle(
-                  color: Colors.cyanAccent.shade400,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.0,
-                ),
-              ),
-              const Row(
-                children: [
-                  Icon(Icons.wifi_tethering,
-                      color: Colors.cyanAccent, size: 20),
-                  SizedBox(width: 24),
-                  Icon(Icons.account_circle_outlined,
-                      color: Colors.white70, size: 20),
-                ],
-              ),
-            ],
-          ),
-        ),
-
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Big Search Input
-                Container(
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF161B22).withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.white10),
-                  ),
-                  child: Row(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 32),
-                        child: Icon(Icons.search,
-                            color: Colors.cyanAccent, size: 28),
-                      ),
-                      const Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText:
-                                'SEARCH FREQUENCIES, ARTISTS, OR ANALOG TEXTURES',
-                            hintStyle: TextStyle(
-                                color: Colors.white12,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 1.0),
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(right: 32),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(4),
-                          border: Border.all(color: Colors.white10),
-                        ),
-                        child: const Row(
-                          children: [
-                            Text('CTRL',
-                                style: TextStyle(
-                                    color: Colors.white24, fontSize: 10)),
-                            SizedBox(width: 8),
-                            Text('K',
-                                style: TextStyle(
-                                    color: Colors.white24, fontSize: 10)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 64),
-
-                // Recent Signals
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'RECENT SIGNALS',
-                      style: TextStyle(
-                        color: Colors.white24,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'CLEAR BUFFER',
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: [
-                    _buildSignalChip('ATMOSPHERIC VOID'),
-                    _buildSignalChip('MODULAR SYNTH 440HZ'),
-                    _buildSignalChip('REVERB DEEP SPACE'),
-                    _buildSignalChip('TECHNO INDUSTRIAL'),
-                  ],
-                ),
-
-                const SizedBox(height: 84),
-
-                // Sonic Domains
-                const Text(
-                  'SONIC DOMAINS',
-                  style: TextStyle(
-                    color: Colors.white24,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 24,
-                  crossAxisSpacing: 24,
-                  childAspectRatio: 2.0,
-                  children: [
-                    _buildDomainCard('TECHNO', '128-145 BPM',
-                        _songs[0]['image'], Colors.purple.shade900, true),
-                    _buildDomainCard('AMBIENT', null, _songs[1]['image'],
-                        Colors.teal.shade900, false),
-                    _buildDomainCard('INDUSTRIAL', null, _songs[2]['image'],
-                        Colors.blueGrey.shade900, false),
-                    _buildDomainCard('PHONK', null, _songs[3]['image'],
-                        Colors.red.shade900, false),
-                  ],
-                ),
-
-                const SizedBox(height: 100),
-
-                // Peak Frequencies Footer
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'PEAK FREQUENCIES',
-                      style: TextStyle(
-                        color: Colors.white10,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 2.0,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text('GLOBAL',
-                            style: TextStyle(
-                                color: Colors.cyanAccent.shade400,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold)),
-                        const SizedBox(width: 24),
-                        const Text('LOCAL',
-                            style: TextStyle(
-                                color: Colors.white10,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 150),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSignalChip(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF161B22).withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 11,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.0,
-            ),
-          ),
-          const SizedBox(width: 12),
-          const Icon(Icons.close, color: Colors.white12, size: 14),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDomainCard(String title, String? subtitle, String imageUrl,
-      Color color, bool isLarge) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        image: DecorationImage(
-          image: AssetImage(imageUrl),
-          fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-              color.withValues(alpha: 0.6), BlendMode.multiply),
-        ),
-      ),
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 48,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -1.0,
-            ),
-          ),
-          if (subtitle != null)
-            Container(
-              margin: const EdgeInsets.only(top: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.cyanAccent.withValues(alpha: 0.1),
-                border:
-                    Border.all(color: Colors.cyanAccent.withValues(alpha: 0.3)),
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: Text(
-                subtitle,
-                style: const TextStyle(
-                  color: Colors.cyanAccent,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ),
         ],
       ),
     );
