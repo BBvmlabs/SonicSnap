@@ -5,6 +5,7 @@ import 'package:sonic_snap/features/music/view/play_now.dart';
 import 'package:sonic_snap/features/search/view/search_screen.dart';
 import 'package:sonic_snap/features/music/widgets/widgets.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
+import 'package:sonic_snap/features/settings/view/settings_screen.dart';
 
 import 'package:sonic_snap/routes/navigator.dart';
 import 'package:sonic_snap/routes/router.dart';
@@ -17,7 +18,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-enum NavState { library, artist, queue, search }
+enum NavState { library, search, artist, queue, settings }
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
@@ -115,30 +116,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildLogo(double width) {
     return Image.asset(
-      "assets/logo/logo.png",
+      "assets/logo/appinsidelogo.png",
       width: width,
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Container(
-      color: Colors.black,
-      child: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        indicatorWeight: 3,
-        labelColor: Theme.of(context).colorScheme.primary,
-        unselectedLabelColor: Colors.grey,
-        labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-        tabs: const [
-          Tab(text: "Tracks"),
-          Tab(text: "Downloads"),
-          Tab(text: "Albums"),
-          Tab(text: "Artists"),
-        ],
-      ),
     );
   }
 
@@ -156,31 +135,102 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildSmallScreenLayout() {
-    return NestedScrollView(
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            backgroundColor: Colors.black,
-            expandedHeight: 120,
-            floating: false,
-            pinned: true,
-            elevation: 0,
-            title: _buildLogo(170),
-            centerTitle: false,
-            actions: [_buildActions()],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(48),
-              child: _buildTabBar(),
+    switch (_currentNav) {
+      case NavState.library:
+        return Column(
+          children: [
+            _buildMobileTopUtilityBar(),
+            _buildStatsAndButtonsRow(),
+            _buildSongList(),
+          ],
+        );
+      case NavState.artist:
+        return ArtistView(songs: _songs, isBigScreen: isBigScreen);
+      case NavState.queue:
+        return ArtistView(songs: _songs, isBigScreen: isBigScreen);
+      case NavState.search:
+        return SearchScreen(
+          isBigScreen: isBigScreen,
+          songs: _songs,
+          recentSearches: const ['Techno Bunker', 'Hans Zimmer'],
+        );
+      case NavState.settings:
+        return const SettingsScreen();
+    }
+  }
+
+  Widget _buildMobileTopUtilityBar() {
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildLogo(220),
+                _buildActions(),
+              ],
             ),
-          ),
-        ];
-      },
-      body: Column(
-        children: [
-          _buildSearchZone(),
-          _buildStatsAndButtonsRow(),
-          _buildSongList(),
-        ],
+            const SizedBox(height: 16),
+            const Text(
+              'LIBRARY',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 30,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -1.0,
+              ),
+            ),
+            const SizedBox(height: 16),
+            TabBar(
+              controller: _tabController,
+              isScrollable: true,
+              indicatorColor: Colors.cyanAccent.shade400,
+              indicatorWeight: 3,
+              indicatorSize: TabBarIndicatorSize.label,
+              labelColor: Colors.cyanAccent.shade400,
+              unselectedLabelColor: Colors.grey[700],
+              dividerColor: Colors.transparent,
+              labelPadding: const EdgeInsets.only(right: 18),
+              tabAlignment: TabAlignment.start,
+              unselectedLabelStyle: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.0,
+              ),
+              labelStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 2.0,
+              ),
+              tabs: const [
+                Tab(text: "ALBUMS"),
+                Tab(text: "TRACKS"),
+                Tab(text: "ARTISTS"),
+                Tab(text: "PLAYLISTS"),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Text(
+                  'SORT BY: RECENTLY ADDED',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(Icons.tune_rounded, color: Colors.grey[600], size: 16),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -228,6 +278,8 @@ class _HomeScreenState extends State<HomeScreen>
           songs: _songs,
           recentSearches: const ['Techno Bunker', 'Hans Zimmer'],
         );
+      case NavState.settings:
+        return const SettingsScreen();
     }
   }
 
@@ -364,7 +416,9 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Text(
                     (index + 1).toString().padLeft(2, '0'),
                     style: TextStyle(
-                      color: isSelected ? Colors.cyanAccent : Colors.grey[800],
+                      color: isSelected
+                          ? Colors.cyanAccent.shade400
+                          : Colors.grey[800],
                       fontSize: 14,
                       fontWeight:
                           isSelected ? FontWeight.bold : FontWeight.normal,
@@ -402,7 +456,7 @@ class _HomeScreenState extends State<HomeScreen>
                             song['title'].toUpperCase(),
                             style: TextStyle(
                               color: isSelected
-                                  ? Colors.cyanAccent
+                                  ? Colors.cyanAccent.shade400
                                   : Colors.white.withValues(alpha: 0.9),
                               fontSize: 15,
                               fontWeight: FontWeight.w900,
@@ -474,6 +528,36 @@ class _HomeScreenState extends State<HomeScreen>
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF0D1117),
+        bottomNavigationBar: isBigScreen
+            ? null
+            : BottomNavigationBar(
+                backgroundColor: const Color(0xFF080C11),
+                selectedItemColor: Colors.cyanAccent.shade400,
+                unselectedItemColor: Colors.grey[600],
+                selectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.0,
+                    fontSize: 10),
+                unselectedLabelStyle: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.0,
+                    fontSize: 10),
+                type: BottomNavigationBarType.fixed,
+                currentIndex: _currentNav.index,
+                onTap: (index) {
+                  setState(() {
+                    _currentNav = NavState.values[index];
+                  });
+                },
+                items: const [
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.home), label: 'HOME'),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.search), label: 'SEARCH'),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.explore_outlined), label: 'LIBRARY')
+                ],
+              ),
         body: Stack(
           children: [
             // Main Content Area
@@ -517,38 +601,58 @@ class _HomeScreenState extends State<HomeScreen>
   Widget _buildSearchZone() {
     return TextField(
         textInputAction: TextInputAction.search,
+        style: const TextStyle(
+            color: Colors.white,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.0),
         decoration: InputDecoration(
+          fillColor: const Color(0xFF161B22),
+          filled: true,
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.primary,
-              width: 2,
-            ),
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
           ),
-          hintText: "Search tracks...",
-          hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-          prefixIcon: Icon(Icons.search,
-              color: Theme.of(context).colorScheme.primary, size: 25),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.cyanAccent.shade400, width: 1),
+          ),
+          hintText: "SEARCH...",
+          hintStyle: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 1.5),
+          prefixIcon: Icon(Icons.search, color: Colors.grey[600], size: 18),
         ));
   }
 
   Widget _buildStatsAndButtonsRow() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      color: Colors.black,
+      color: Colors.transparent,
       child: Row(
         children: [
-          Text("${_songs.length} Tracks",
+          Text("${_songs.length} TRACKS",
               style: TextStyle(
                   color: Colors.grey[500],
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500)),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.0)),
           const Spacer(),
-          _buildActionButton(Icons.shuffle, "Shuffle",
-              Colors.purpleAccent.withValues(alpha: 0.1), Colors.purpleAccent),
+          _buildActionButton(
+              Icons.shuffle,
+              "SHUFFLE",
+              Colors.cyanAccent.shade400.withValues(alpha: 0.1),
+              Colors.cyanAccent.shade400),
           const SizedBox(width: 8),
-          _buildActionButton(Icons.play_arrow, "Play All",
-              Colors.purpleAccent.withValues(alpha: 0.1), Colors.purpleAccent),
+          _buildActionButton(
+              Icons.play_arrow,
+              "PLAY ALL",
+              Colors.cyanAccent.shade400.withValues(alpha: 0.1),
+              Colors.cyanAccent.shade400),
         ],
       ),
     );

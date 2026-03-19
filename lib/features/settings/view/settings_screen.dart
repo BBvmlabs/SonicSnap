@@ -25,9 +25,9 @@ class SettingsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("CONFIGURATION",
+            Text("CONFIGURATION",
                 style: TextStyle(
-                    color: Colors.tealAccent,
+                    color: Colors.cyanAccent.shade400,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2)),
@@ -86,8 +86,8 @@ class SettingsScreen extends StatelessWidget {
                     Container(
                         width: 12,
                         height: 12,
-                        decoration: const BoxDecoration(
-                            color: Colors.tealAccent, shape: BoxShape.circle)),
+                        decoration: BoxDecoration(
+                            color: Colors.cyanAccent.shade400, shape: BoxShape.circle)),
                     const SizedBox(width: 4),
                     Container(
                         width: 12,
@@ -194,7 +194,7 @@ class SettingsScreen extends StatelessWidget {
           color: const Color(0xFF0D1117), // Icon bg
           borderRadius: BorderRadius.circular(20), // Circle
         ),
-        child: Icon(icon, color: Colors.tealAccent, size: 20),
+        child: Icon(icon, color: Colors.cyanAccent.shade400, size: 20),
       ),
       title: Text(title,
           style: const TextStyle(
@@ -222,7 +222,7 @@ class SettingsScreen extends StatelessWidget {
           color: const Color(0xFF0D1117),
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Icon(icon, color: Colors.tealAccent, size: 20),
+        child: Icon(icon, color: Colors.cyanAccent.shade400, size: 20),
       ),
       title: Text(title,
           style: const TextStyle(
@@ -231,7 +231,7 @@ class SettingsScreen extends StatelessWidget {
         value: value,
         onChanged: onChanged,
         activeThumbColor: Colors.black,
-        activeTrackColor: Colors.tealAccent,
+        activeTrackColor: Colors.cyanAccent.shade400,
         inactiveThumbColor: Colors.grey,
         inactiveTrackColor: Colors.grey[800],
       ),

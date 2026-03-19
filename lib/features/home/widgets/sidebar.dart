@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/home/view/home_screen.dart';
+import 'package:sonic_snap/widgets/app_logo.dart';
 
 class Sidebar extends StatelessWidget {
   final NavState currentNav;
@@ -21,34 +22,27 @@ class Sidebar extends StatelessWidget {
         children: [
           const SizedBox(height: 48),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                insideAppLogo(350),
+                const SizedBox(height: 20),
                 Text(
-                  'VIBEENGINE',
-                  style: TextStyle(
-                    color: Colors.cyanAccent.shade400,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.0,
-                  ),
-                ),
-                Text(
-                  'SONIC LABORATORY',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 3.0,
-                  ),
+                  "PLUG INTO THE SOUNDSCAPE",
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        fontSize: 12,
+                        letterSpacing: 3,
+                        color: Colors.white24,
+                        fontWeight: FontWeight.w900,
+                      ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 72),
           _buildSidebarItem(
-              Icons.home_outlined, 'Home', currentNav == NavState .library, () {
+              Icons.home_outlined, 'Home', currentNav == NavState.library, () {
             onNavChanged(NavState.library);
           }),
           _buildSidebarItem(

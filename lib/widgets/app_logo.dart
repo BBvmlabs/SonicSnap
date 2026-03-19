@@ -65,3 +65,10 @@ Widget buildLogo(BuildContext context) {
     ],
   );
 }
+
+Widget insideAppLogo(double width) {
+  return Image.asset(
+    "assets/logo/appinsidelogo.png",
+    width: width,
+  );
+}

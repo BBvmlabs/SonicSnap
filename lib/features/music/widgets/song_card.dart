@@ -29,7 +29,17 @@ class SongCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Padding(
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected
+              ? const Color(0xFF161B22).withValues(alpha: 0.5)
+              : Colors.transparent,
+          border: isSelected
+              ? Border(
+                  left: BorderSide(color: Colors.cyanAccent.shade400, width: 3),
+                )
+              : null,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Row(
           children: [
@@ -64,23 +74,25 @@ class SongCard extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          title,
+                          title.toUpperCase(),
                           style: isSelected
                               ? Theme.of(context)
                                   .textTheme
                                   .labelMedium
                                   ?.copyWith(
-                                    color: Colors.purpleAccent,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
+                                    color: Colors.cyanAccent.shade400,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.0,
                                   )
                               : Theme.of(context)
                                   .textTheme
                                   .bodyMedium
                                   ?.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 1.0,
                                   ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -92,8 +104,9 @@ class SongCard extends StatelessWidget {
                   Text(
                     artist,
                     style: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 14,
+                      color: Colors.grey[500],
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
