@@ -5,20 +5,23 @@ import 'package:sonic_snap/routes/router.dart';
 
 // --- Contextual Menu (Three dots) ---
 void showSongOptionsSheet(BuildContext context, Map<String, dynamic> song,
-    {VoidCallback? onAlbumTap}) {
+    {VoidCallback? onAlbumTap, VoidCallback? onArtistTap}) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (context) => _SongOptionsSheet(song: song, onAlbumTap: onAlbumTap),
+    builder: (context) => _SongOptionsSheet(
+        song: song, onAlbumTap: onAlbumTap, onArtistTap: onArtistTap),
   );
 }
 
 class _SongOptionsSheet extends StatelessWidget {
   final Map<String, dynamic> song;
   final VoidCallback? onAlbumTap;
+  final VoidCallback? onArtistTap;
 
-  const _SongOptionsSheet({required this.song, this.onAlbumTap});
+  const _SongOptionsSheet(
+      {required this.song, this.onAlbumTap, this.onArtistTap});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +103,10 @@ class _SongOptionsSheet extends StatelessWidget {
             Navigator.pop(context); // Close current sheet
             showAddToPlaylistSheet(context);
           }),
-          _buildOption(Icons.person, "Go to Artist", isLink: true),
+          _buildOption(Icons.person, "Go to Artist", isLink: true, onTap: () {
+            Navigator.pop(context);
+            onArtistTap?.call();
+          }),
           _buildOption(Icons.album, "Go to Album", isLink: true, onTap: () {
             Navigator.pop(context);
             onAlbumTap?.call();

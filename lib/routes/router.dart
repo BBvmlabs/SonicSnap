@@ -1,10 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:sonic_snap/features/album/view/album_details_screen.dart';
+import 'package:sonic_snap/features/album/view/album_screen.dart';
 import 'package:sonic_snap/features/auth/view/login_screen.dart';
 import 'package:sonic_snap/features/home/view/home_screen.dart';
 import 'package:sonic_snap/features/music/view/search_screen.dart';
 import 'package:sonic_snap/features/splash/view/appscreen.dart';
-
-import 'package:sonic_snap/features/music/view/album_details_screen.dart';
 import 'package:sonic_snap/features/settings/view/settings_screen.dart';
 import 'package:sonic_snap/features/settings/view/equalizer_screen.dart';
 import 'package:sonic_snap/features/settings/view/storage_settings_screen.dart';
@@ -17,7 +17,9 @@ class AppRouter {
   static const String homeScreen = "/home-screen";
   static const String searchScreen = "/search-screen";
   static const String albumScreen = "/album-screen";
+  static const String albumDetailsScreen = "/album-details-screen";
   static const String artistScreen = "/artist-screen";
+  static const String artistDetailsScreen = "/artist-details-screen";
   static const String playNowScreen = "/play-now-screen";
   static const String settingsScreen = "/settings-screen";
   static const String equalizerScreen = "/equalizer-screen";
@@ -62,10 +64,25 @@ class AppRouter {
       ),
       GoRoute(
         path: albumScreen,
+        builder: (context, state) => const AlbumScreen(),
+      ),
+      GoRoute(
+        path: albumDetailsScreen,
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>? ?? {};
           return AlbumDetailsScreen(
             title: extra['title'] ?? 'Unknown Album',
+            artist: extra['artist'] ?? 'Unknown Artist',
+            image: extra['image'] ?? 'assets/logo/play_now.png',
+          );
+        },
+      ),
+      GoRoute(
+        path: artistDetailsScreen,
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>? ?? {};
+          return AlbumDetailsScreen(
+            title: extra['title'] ?? 'Unknown Artist',
             artist: extra['artist'] ?? 'Unknown Artist',
             image: extra['image'] ?? 'assets/logo/play_now.png',
           );

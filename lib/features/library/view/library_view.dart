@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:sonic_snap/features/album/view/album_screen.dart';
-import 'package:sonic_snap/features/artist/view/artist_list_view.dart';
 import 'package:sonic_snap/features/artist/view/artist_view.dart';
+import 'package:sonic_snap/features/home/view/home_screen.dart';
 import 'package:sonic_snap/features/home/widgets/sidebar.dart';
 import 'package:sonic_snap/features/music/view/play_now.dart';
 import 'package:sonic_snap/features/search/view/search_screen.dart';
 import 'package:sonic_snap/features/music/widgets/widgets.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
-import 'package:sonic_snap/features/settings/view/settings_screen.dart';
-
 import 'package:sonic_snap/routes/navigator.dart';
 import 'package:sonic_snap/routes/router.dart';
 import 'package:sonic_snap/widgets/build_tag.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class LibraryView extends StatefulWidget {
+  const LibraryView({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<LibraryView> createState() => _LibraryViewState();
 }
 
-enum NavState { home, album, artist, tracks, playlists, search, settings }
+enum LibraryNav { album, tracks, playlists, artists }
 
-class _HomeScreenState extends State<HomeScreen>
+class _LibraryViewState extends State<LibraryView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool isPlaying = false;
   bool isPlayerExpanded = false;
   bool isBigScreen = false;
   int _selectedSongIndex = 0;
-  NavState _currentNav = NavState.home;
+  LibraryNav _currentNav = LibraryNav.album;
 
   void _nextSong() {
     setState(() {
@@ -109,15 +106,7 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   void _navigateToAlbum(Map<String, dynamic> song) {
-    navigate(context, AppRouter.albumDetailsScreen, extra: {
-      'title': "The Fat of the Land",
-      'artist': "The Prodigy",
-      'image': song['image'],
-    });
-  }
-
-  void _navigateToArtist(Map<String, dynamic> song) {
-    navigate(context, AppRouter.artistDetailsScreen, extra: {
+    navigate(context, AppRouter.albumScreen, extra: {
       'title': "The Fat of the Land",
       'artist': "The Prodigy",
       'image': song['image'],
@@ -146,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildSmallScreenLayout() {
     switch (_currentNav) {
-      case NavState.home:
+      case LibraryNav.album:
         return Column(
           children: [
             _buildMobileTopUtilityBar(),
@@ -154,17 +143,11 @@ class _HomeScreenState extends State<HomeScreen>
             _buildSongList(),
           ],
         );
-      case NavState.album:
+      case LibraryNav.tracks:
         return ArtistView(songs: _songs, isBigScreen: isBigScreen);
-      case NavState.artist:
+      case LibraryNav.playlists:
         return ArtistView(songs: _songs, isBigScreen: isBigScreen);
-      case NavState.tracks:
-        return ArtistView(songs: _songs, isBigScreen: isBigScreen);
-      case NavState.playlists:
-        return ArtistView(songs: _songs, isBigScreen: isBigScreen);
-      case NavState.settings:
-        return const SettingsScreen();
-      case NavState.search:
+      case LibraryNav.artists:
         return SearchScreen(
           isBigScreen: isBigScreen,
           songs: _songs,
@@ -190,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen>
             ),
             const SizedBox(height: 16),
             const Text(
-              'HOME',
+              'LIBRARY',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 30,
@@ -254,11 +237,9 @@ class _HomeScreenState extends State<HomeScreen>
       children: [
         // 1. Fixed Sidebar Navigation
         Sidebar(
-          currentNav: _currentNav,
+          currentNav: NavState.album,
           onNavChanged: (nav) {
-            setState(() {
-              _currentNav = nav;
-            });
+            // Main navigation handled externally
           },
         ),
 
@@ -272,7 +253,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildMainContent() {
     switch (_currentNav) {
-      case NavState.home:
+      case LibraryNav.album:
         return Column(
           children: [
             _buildTopUtilityBar(),
@@ -282,22 +263,16 @@ class _HomeScreenState extends State<HomeScreen>
             Expanded(child: _buildSongTable()),
           ],
         );
-      case NavState.album:
-        return const AlbumScreen();
-      case NavState.artist:
-        return const ArtistListView();
-      case NavState.tracks:
+      case LibraryNav.tracks:
         return ArtistView(songs: _songs, isBigScreen: isBigScreen);
-      case NavState.playlists:
+      case LibraryNav.playlists:
         return ArtistView(songs: _songs, isBigScreen: isBigScreen);
-      case NavState.search:
+      case LibraryNav.artists:
         return SearchScreen(
           isBigScreen: isBigScreen,
           songs: _songs,
           recentSearches: const ['Techno Bunker', 'Hans Zimmer'],
         );
-      case NavState.settings:
-        return const SettingsScreen();
     }
   }
 
@@ -561,11 +536,9 @@ class _HomeScreenState extends State<HomeScreen>
                     letterSpacing: 1.0,
                     fontSize: 10),
                 type: BottomNavigationBarType.fixed,
-                currentIndex: _currentNav.index,
+                currentIndex: 2, // Library index in bottom bar
                 onTap: (index) {
-                  setState(() {
-                    _currentNav = NavState.values[index];
-                  });
+                  // Handle library screen navigation
                 },
                 items: const [
                   BottomNavigationBarItem(
@@ -723,7 +696,6 @@ class _HomeScreenState extends State<HomeScreen>
                 context,
                 song,
                 onAlbumTap: () => _navigateToAlbum(song),
-                onArtistTap: () => _navigateToArtist(song),
               );
             },
           );

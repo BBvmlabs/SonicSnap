@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/widgets/build_tag.dart';
 
-class ArtistView extends StatelessWidget {
+class ArtistView extends StatefulWidget {
   final List<Map<String, dynamic>> songs;
   final bool isBigScreen;
   const ArtistView({super.key, required this.songs, required this.isBigScreen});
 
   @override
+  State<ArtistView> createState() => _ArtistViewState();
+}
+
+class _ArtistViewState extends State<ArtistView> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isBigScreen ? _buildLargeArtistView() : _buildSmallArtistView(),
+      body: widget.isBigScreen
+          ? _buildLargeArtistView()
+          : _buildSmallArtistView(),
     );
   }
 
@@ -26,7 +33,7 @@ class ArtistView extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(songs[0]['image']),
+                    image: AssetImage(widget.songs[0]['image']),
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
                   ),
@@ -212,7 +219,8 @@ class ArtistView extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: 5,
                         itemBuilder: (context, index) {
-                          final song = songs[index % songs.length];
+                          final song =
+                              widget.songs[index % widget.songs.length];
                           return _buildArtistTrackItem(index + 1, song);
                         },
                       ),
@@ -292,7 +300,7 @@ class ArtistView extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage(songs[0]['image']),
+                    image: AssetImage(widget.songs[0]['image']),
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
                   ),
@@ -506,7 +514,7 @@ class ArtistView extends StatelessWidget {
   }
 
   Widget _buildSongRow(int index) {
-    final song = songs[index % songs.length];
+    final song = widget.songs[index % widget.songs.length];
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -658,7 +666,8 @@ class ArtistView extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
-                image: AssetImage(songs[index % songs.length]['image']),
+                image: AssetImage(
+                    widget.songs[index % widget.songs.length]['image']),
                 fit: BoxFit.cover,
               ),
             ),

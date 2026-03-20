@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
 
-class AlbumDetailsScreen extends StatelessWidget {
+class OldAlbumDetailsScreen extends StatelessWidget {
   final String title;
   final String artist;
   final String image;
 
-  const AlbumDetailsScreen({
+  const OldAlbumDetailsScreen({
     super.key,
     required this.title,
     required this.artist,

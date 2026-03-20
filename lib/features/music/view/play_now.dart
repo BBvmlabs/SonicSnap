@@ -340,8 +340,8 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                 Row(
                   children: [
                     buildTag('NOW PLAYING',
-                        color: Colors.white.withValues(alpha: 0.5),
-                        textColor: Colors.black),
+                        color: Colors.black.withValues(alpha: 0.5),
+                        textColor: Colors.white),
                     const SizedBox(width: 12),
                     buildTag('HI-RES 192KHZ'),
                     const SizedBox(width: 12),
