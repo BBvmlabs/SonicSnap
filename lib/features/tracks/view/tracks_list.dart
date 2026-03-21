@@ -37,85 +37,27 @@ class _TracksListScreenState extends State<TracksListScreen> {
   @override
   Widget build(BuildContext context) {
     bool isBigScreen = MediaQuery.of(context).size.width > 900;
-    
+
     // Returning pure content so it nests properly inside the main scaffolding
     if (isBigScreen) {
       return Column(
         children: [
           buildTitleBar("TRACKS"),
           _buildTableHeadings(),
-          const Divider(height: 1, color: Colors.white10, indent: 32, endIndent: 32),
+          const Divider(
+              height: 1, color: Colors.white10, indent: 32, endIndent: 32),
           Expanded(child: _buildSongTable(isBigScreen)),
         ],
       );
     } else {
       return Column(
         children: [
-          _buildMobileTopUtilityBar(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: _buildSearchZone(),
-          ),
+          buildMobileTitleBar(context, Icons.music_note, 'TRACKS'),
           _buildStatsAndButtonsRow(),
           Expanded(child: _buildSongList()),
         ],
       );
     }
-  }
-
-  // Mobile Top Bar
-  Widget _buildMobileTopUtilityBar() {
-    return SafeArea(
-      bottom: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'TRACKS',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -1.0,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  
-  Widget _buildSearchZone() {
-    return TextField(
-      textInputAction: TextInputAction.search,
-      style: const TextStyle(
-          color: Colors.white,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 1.0),
-      decoration: InputDecoration(
-        fillColor: const Color(0xFF161B22),
-        filled: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: Colors.cyanAccent.shade400, width: 1),
-        ),
-        hintText: "SEARCH...",
-        hintStyle: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 13,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 1.5),
-        prefixIcon: Icon(Icons.search, color: Colors.grey[600], size: 18),
-      ),
-    );
   }
 
   // Big Screen Table

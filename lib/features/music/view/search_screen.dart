@@ -71,12 +71,15 @@ class SearchScreen extends StatelessWidget {
               ),
 
               SliverToBoxAdapter(
-                child: Row(
-                  children: [
-                    _buildRecentChip("Techno Bunker"),
-                    const SizedBox(width: 12),
-                    _buildRecentChip("Hans Zimmer"),
-                  ],
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      _buildRecentChip("Techno Bunker"),
+                      const SizedBox(width: 12),
+                      _buildRecentChip("Hans Zimmer"),
+                    ],
+                  ),
                 ),
               ),
 

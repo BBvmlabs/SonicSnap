@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sonic_snap/features/album/widgets/grid_view.dart';
+import 'package:sonic_snap/features/artist/widgets/grid_view.dart';
 import 'package:sonic_snap/widgets/title_bar.dart';
 
-class AlbumScreen extends StatefulWidget {
-  const AlbumScreen({super.key});
+class ArtistScreen extends StatefulWidget {
+  const ArtistScreen({super.key});
 
   @override
-  State<AlbumScreen> createState() => _AlbumScreenState();
+  State<ArtistScreen> createState() => _ArtistScreenState();
 }
 
-class _AlbumScreenState extends State<AlbumScreen> {
+class _ArtistScreenState extends State<ArtistScreen> {
   @override
   Widget build(BuildContext context) {
     final isBigScreen = MediaQuery.of(context).size.width > 900;
@@ -27,8 +27,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildTitleBar("ALBUMS"),
-          const AlbumGridWidget(),
+          buildTitleBar("ARTISTS"),
+          const ArtistGridWidget(),
           const SizedBox(height: 100), // Space for mini player
         ],
       ),
@@ -41,9 +41,9 @@ class _AlbumScreenState extends State<AlbumScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildMobileTitleBar(context, Icons.album_sharp, 'ALBUMS'),
-            const AlbumGridWidget(),
-            const SizedBox(height: 75), // Space for mini player
+            buildMobileTitleBar(context, Icons.person, 'ARTISTS'),
+            const ArtistGridWidget(),
+            const SizedBox(height: 100), // Space for mini player
           ],
         ),
       ),

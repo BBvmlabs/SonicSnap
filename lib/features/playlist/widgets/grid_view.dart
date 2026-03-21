@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:sonic_snap/features/album/view/album_details_screen.dart';
+import 'package:sonic_snap/features/playlist/view/playlist_details_screen.dart';
 
-class AlbumGridWidget extends StatefulWidget {
-  const AlbumGridWidget({super.key});
+class PlaylistGridWidget extends StatefulWidget {
+  const PlaylistGridWidget({super.key});
 
   @override
-  State<AlbumGridWidget> createState() => _AlbumGridWidgetState();
+  State<PlaylistGridWidget> createState() => _PlaylistGridWidgetState();
 }
 
-class _AlbumGridWidgetState extends State<AlbumGridWidget> {
-  final List<Map<String, dynamic>> _albums = [
+class _PlaylistGridWidgetState extends State<PlaylistGridWidget> {
+  final List<Map<String, dynamic>> _playlists = [
     {
       "title": "The Fat of the Land",
       "artist": "The Prodigy",
-      "image": "https://picsum.photos/seed/album1/400/400",
+      "image": "https://picsum.photos/seed/playlist1/400/400",
       "tracks": 10,
       "year": "1997",
       "color": Colors.orange,
@@ -21,7 +21,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Hurry Up, We're Dreaming",
       "artist": "M83",
-      "image": "https://picsum.photos/seed/album2/400/400",
+      "image": "https://picsum.photos/seed/playlist2/400/400",
       "tracks": 22,
       "year": "2011",
       "color": Colors.blue,
@@ -29,7 +29,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Random Access Memories",
       "artist": "Daft Punk",
-      "image": "https://picsum.photos/seed/album3/400/400",
+      "image": "https://picsum.photos/seed/playlist3/400/400",
       "tracks": 13,
       "year": "2013",
       "color": Colors.grey,
@@ -37,7 +37,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Discovery",
       "artist": "Daft Punk",
-      "image": "https://picsum.photos/seed/album4/400/400",
+      "image": "https://picsum.photos/seed/playlist4/400/400",
       "tracks": 14,
       "year": "2001",
       "color": Colors.blueGrey,
@@ -45,7 +45,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Homework",
       "artist": "Daft Punk",
-      "image": "https://picsum.photos/seed/album5/400/400",
+      "image": "https://picsum.photos/seed/playlist5/400/400",
       "tracks": 16,
       "year": "1997",
       "color": Colors.red,
@@ -53,7 +53,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Mezzanine",
       "artist": "Massive Attack",
-      "image": "https://picsum.photos/seed/album6/400/400",
+      "image": "https://picsum.photos/seed/playlist6/400/400",
       "tracks": 11,
       "year": "1998",
       "color": Colors.green,
@@ -61,7 +61,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Dummy",
       "artist": "Portishead",
-      "image": "https://picsum.photos/seed/album7/400/400",
+      "image": "https://picsum.photos/seed/playlist7/400/400",
       "tracks": 11,
       "year": "1994",
       "color": Colors.indigo,
@@ -69,7 +69,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Untrue",
       "artist": "Burial",
-      "image": "https://picsum.photos/seed/album8/400/400",
+      "image": "https://picsum.photos/seed/playlist8/400/400",
       "tracks": 13,
       "year": "2007",
       "color": Colors.black,
@@ -77,7 +77,7 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
     {
       "title": "Music Has the Right to Children",
       "artist": "Boards of Canada",
-      "image": "https://picsum.photos/seed/album9/400/400",
+      "image": "https://picsum.photos/seed/playlist9/400/400",
       "tracks": 18,
       "year": "1998",
       "color": Colors.teal,
@@ -108,10 +108,10 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
             mainAxisSpacing: isBigScreen ? 32 : 24,
             childAspectRatio: isBigScreen ? 0.75 : 0.68,
           ),
-          itemCount: _albums.length,
+          itemCount: _playlists.length,
           itemBuilder: (context, index) {
-            final album = _albums[index];
-            return _AlbumCard(album: album, isBigScreen: isBigScreen);
+            final playlist = _playlists[index];
+            return _PlaylistCard(playlist: playlist, isBigScreen: isBigScreen);
           },
         );
       },
@@ -119,17 +119,17 @@ class _AlbumGridWidgetState extends State<AlbumGridWidget> {
   }
 }
 
-class _AlbumCard extends StatefulWidget {
-  final Map<String, dynamic> album;
+class _PlaylistCard extends StatefulWidget {
+  final Map<String, dynamic> playlist;
   final bool isBigScreen;
 
-  const _AlbumCard({required this.album, required this.isBigScreen});
+  const _PlaylistCard({required this.playlist, required this.isBigScreen});
 
   @override
-  State<_AlbumCard> createState() => _AlbumCardState();
+  State<_PlaylistCard> createState() => _PlaylistCardState();
 }
 
-class _AlbumCardState extends State<_AlbumCard> {
+class _PlaylistCardState extends State<_PlaylistCard> {
   bool _isHovered = false;
 
   @override
@@ -142,10 +142,10 @@ class _AlbumCardState extends State<_AlbumCard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AlbumDetailsScreen(
-                title: widget.album['title'],
-                artist: widget.album['artist'],
-                image: widget.album['image'],
+              builder: (context) => PlaylistDetailsScreen(
+                title: widget.playlist['title'],
+                artist: widget.playlist['artist'],
+                image: widget.playlist['image'],
                 isBigScreen: widget.isBigScreen,
               ),
             ),
@@ -176,10 +176,10 @@ class _AlbumCardState extends State<_AlbumCard> {
                           ),
                         ],
                         image: DecorationImage(
-                          image: widget.album['image'].startsWith('http')
-                              ? NetworkImage(widget.album['image'])
+                          image: widget.playlist['image'].startsWith('http')
+                              ? NetworkImage(widget.playlist['image'])
                                   as ImageProvider
-                              : AssetImage(widget.album['image']),
+                              : AssetImage(widget.playlist['image']),
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -210,7 +210,7 @@ class _AlbumCardState extends State<_AlbumCard> {
               ),
               const SizedBox(height: 16),
               Text(
-                widget.album['title'].toUpperCase(),
+                widget.playlist['title'].toUpperCase(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -222,7 +222,7 @@ class _AlbumCardState extends State<_AlbumCard> {
               ),
               const SizedBox(height: 4),
               Text(
-                "${widget.album['artist']} • ${widget.album['year']}",
+                "${widget.playlist['artist']} • ${widget.playlist['year']}",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -233,7 +233,7 @@ class _AlbumCardState extends State<_AlbumCard> {
               ),
               const SizedBox(height: 2),
               Text(
-                "${widget.album['tracks']} TRACKS",
+                "${widget.playlist['tracks']} TRACKS",
                 style: TextStyle(
                   color: Colors.cyanAccent.shade400.withOpacity(0.7),
                   fontSize: 10,

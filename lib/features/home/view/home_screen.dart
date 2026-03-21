@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/album/view/album_screen.dart';
-import 'package:sonic_snap/features/artist/view/artist_list_view.dart';
 import 'package:sonic_snap/data/dummy_data.dart';
+import 'package:sonic_snap/features/artist/view/artist_screen.dart';
 import 'package:sonic_snap/features/home/view/home_content.dart';
+import 'package:sonic_snap/features/library/view/library_screen.dart';
 import 'package:sonic_snap/features/menu/view/sidebar.dart';
 import 'package:sonic_snap/features/music/view/play_now.dart';
 import 'package:sonic_snap/features/music/view/search_screen.dart';
+import 'package:sonic_snap/features/playlist/view/playlist_screen.dart';
 import 'package:sonic_snap/features/settings/view/settings_screen.dart';
 import 'package:sonic_snap/features/tracks/view/tracks_list.dart';
 
@@ -55,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen>
       case MobileNavState.search:
         return const SearchScreen();
       case MobileNavState.library:
-        return const TracksListScreen();
+        return const libraryScreen();
     }
   }
 
@@ -87,11 +89,11 @@ class _HomeScreenState extends State<HomeScreen>
       case NavState.album:
         return const AlbumScreen();
       case NavState.artist:
-        return const ArtistListView();
+        return const ArtistScreen();
       case NavState.tracks:
         return const TracksListScreen();
       case NavState.playlists:
-        return const AlbumScreen();
+        return const PlaylistScreen();
       case NavState.settings:
         return const SettingsScreen();
     }

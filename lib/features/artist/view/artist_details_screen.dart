@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sonic_snap/core/app_theme.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
 
-class AlbumDetailsScreen extends StatefulWidget {
+class ArtistDetailsScreen extends StatefulWidget {
   final List<Map<String, dynamic>> songs = [
     {
       'title': 'Breathe',
@@ -40,7 +40,7 @@ class AlbumDetailsScreen extends StatefulWidget {
   final String image;
   final bool isBigScreen;
 
-  AlbumDetailsScreen({
+  ArtistDetailsScreen({
     super.key,
     required this.title,
     required this.artist,
@@ -49,10 +49,10 @@ class AlbumDetailsScreen extends StatefulWidget {
   });
 
   @override
-  State<AlbumDetailsScreen> createState() => _AlbumDetailsScreenState();
+  State<ArtistDetailsScreen> createState() => _ArtistDetailsScreenState();
 }
 
-class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
+class _ArtistDetailsScreenState extends State<ArtistDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -267,7 +267,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget buildNewDesktopScreen(BuildContext context) {
     return Row(
       children: [
-        // Left Column: Album Art and Info (Fixed-ish)
+        // Left Column: Artist Art and Info (Fixed-ish)
         Expanded(
           flex: 4,
           child: Container(
@@ -306,7 +306,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Hero(
-                          tag: 'album-art-${widget.title}',
+                          tag: 'artist-art-${widget.title}',
                           child: Container(
                             height: 300,
                             width: 300,

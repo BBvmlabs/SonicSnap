@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-Widget buildTitleBar(String title) {
+Widget buildTitleBar(String title, {bool isSmallScreen = false}) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
+    padding: EdgeInsets.fromLTRB(
+        isSmallScreen ? 20 : 40, isSmallScreen ? 10 : 32, 40, 0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -11,39 +12,41 @@ Widget buildTitleBar(String title) {
           children: [
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 56,
+                fontSize: isSmallScreen ? 46 : 56,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -2.0,
               ),
             ),
             const Spacer(),
-            Expanded(child: _buildSearchZone()),
+            if (!isSmallScreen) Expanded(child: _buildSearchZone()),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Row(
-                  children: [
-                    Text(
-                      'SORT BY: RECENTLY ADDED',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.0,
+        if (!isSmallScreen)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Row(
+                    children: [
+                      Text(
+                        'SORT BY: RECENTLY ADDED',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.0,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Icon(Icons.tune_rounded, color: Colors.grey[600], size: 16),
-                  ],
-                )),
-          ],
-        ),
+                      const SizedBox(width: 8),
+                      Icon(Icons.tune_rounded,
+                          color: Colors.grey[600], size: 16),
+                    ],
+                  )),
+            ],
+          ),
       ],
     ),
   );
@@ -77,4 +80,18 @@ Widget _buildSearchZone() {
             letterSpacing: 1.5),
         prefixIcon: Icon(Icons.search, color: Colors.grey[600], size: 18),
       ));
+}
+
+Widget buildMobileTitleBar(BuildContext context, IconData icon, String title) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+    child: Row(children: [
+      Icon(icon, color: Colors.white, size: 30),
+      const SizedBox(width: 10),
+      Text(
+        title,
+        style: Theme.of(context).textTheme.headlineLarge,
+      )
+    ]),
+  );
 }

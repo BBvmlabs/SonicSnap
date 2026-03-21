@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:sonic_snap/features/album/widgets/grid_view.dart';
+import 'package:sonic_snap/features/playlist/widgets/grid_view.dart';
 import 'package:sonic_snap/widgets/title_bar.dart';
 
-class AlbumScreen extends StatefulWidget {
-  const AlbumScreen({super.key});
+class PlaylistScreen extends StatefulWidget {
+  const PlaylistScreen({super.key});
 
   @override
-  State<AlbumScreen> createState() => _AlbumScreenState();
+  State<PlaylistScreen> createState() => _PlaylistScreenState();
 }
 
-class _AlbumScreenState extends State<AlbumScreen> {
+class _PlaylistScreenState extends State<PlaylistScreen> {
   @override
   Widget build(BuildContext context) {
     final isBigScreen = MediaQuery.of(context).size.width > 900;
@@ -17,33 +17,33 @@ class _AlbumScreenState extends State<AlbumScreen> {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: isBigScreen
-          ? _buildDesktopScreenLayout()
-          : _buildMobileScreenLayout(context),
+          ? _buildBigScreenLayout()
+          : _buildSmallScreenLayout(context),
     );
   }
 
-  Widget _buildDesktopScreenLayout() {
+  Widget _buildBigScreenLayout() {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildTitleBar("ALBUMS"),
-          const AlbumGridWidget(),
+          buildTitleBar("PLAYLISTS"),
+          const PlaylistGridWidget(),
           const SizedBox(height: 100), // Space for mini player
         ],
       ),
     );
   }
 
-  Widget _buildMobileScreenLayout(BuildContext context) {
+  Widget _buildSmallScreenLayout(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildMobileTitleBar(context, Icons.album_sharp, 'ALBUMS'),
-            const AlbumGridWidget(),
-            const SizedBox(height: 75), // Space for mini player
+            buildMobileTitleBar(context, Icons.playlist_play, 'PLAYLISTS'),
+            const PlaylistGridWidget(),
+            const SizedBox(height: 100), // Space for mini player
           ],
         ),
       ),

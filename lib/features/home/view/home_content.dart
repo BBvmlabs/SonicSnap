@@ -76,7 +76,7 @@ class HomeContent extends StatelessWidget {
                   child: _buildHorizontalCardList(isBigScreen, height: 220),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildSectionTitle("TOP 50 GLOBAL"),
+                  child: _buildSectionTitle("TOP 50 TRACKS"),
                 ),
                 SliverToBoxAdapter(
                   child: _buildHorizontalCardList(isBigScreen,
@@ -168,25 +168,22 @@ class HomeContent extends StatelessWidget {
                         isBigScreen,
                         "Top Songs",
                         "18 Tracks",
-                        [const Color(0xFF4527A0), const Color(0xFF00E5FF)],
-                        icon: Icons.replay_sharp)),
+                        [const Color(0xFF4527A0), const Color(0xFF00E5FF)])),
               ],
             )
           : Row(
               children: [
-                _buildSpecialCard(
-                    isBigScreen,
-                    "LIKED SONGS",
-                    "342 Tracks",
-                    [
-                      const Color.fromARGB(255, 202, 51, 51),
-                      const Color.fromARGB(255, 242, 96, 96),
-                    ],
-                    icon: Icons.favorite),
-                const SizedBox(width: 20),
-                _buildSpecialCard(isBigScreen, "TOP ALBUMS", "18 Albums",
-                    [const Color(0xFFE64A19), const Color(0xFFFFD54F)],
-                    icon: Icons.album),
+                Expanded(
+                  child: _buildSpecialCard(
+                      isBigScreen,
+                      "LIKED SONGS",
+                      "342 Tracks",
+                      [
+                        const Color.fromARGB(255, 202, 51, 51),
+                        const Color.fromARGB(255, 242, 96, 96),
+                      ],
+                      icon: Icons.favorite),
+                ),
               ],
             ),
     );
@@ -279,7 +276,7 @@ class HomeContent extends StatelessWidget {
                           isCircular ? null : BorderRadius.circular(12),
                       image: DecorationImage(
                         image: AssetImage(song['image']),
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                       boxShadow: [
                         BoxShadow(

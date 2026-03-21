@@ -11,14 +11,14 @@ final List<Map<String, dynamic>> dummySongs = [
   {
     "title": "Midnight City",
     "artist": "M83 • Hurry Up, We're Dreaming",
-    "image": "assets/logo/play_now.png",
+    "image": "assets/logo/newlogo.png",
     "color": Colors.blue,
     "duration": "4:03",
   },
   {
     "title": "Breathe",
     "artist": "The Prodigy • The Fat of the Land",
-    "image": "assets/logo/play_now.png",
+    "image": "assets/logo/applogo.png",
     "color": Colors.red,
     "duration": "5:35",
   },
