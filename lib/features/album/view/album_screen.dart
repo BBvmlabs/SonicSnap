@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/album/widgets/grid_view.dart';
+import 'package:sonic_snap/widgets/title_bar.dart';
 
 class AlbumScreen extends StatefulWidget {
   const AlbumScreen({super.key});
@@ -26,7 +27,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTopUtilityBar(),
+          buildTitleBar("ALBUMS"),
           const AlbumGridWidget(),
           const SizedBox(height: 100), // Space for mini player
         ],
@@ -60,52 +61,6 @@ class _AlbumScreenState extends State<AlbumScreen> {
             const SizedBox(height: 100), // Space for mini player
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTopUtilityBar() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(40, 32, 40, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                'ALBUMS',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 56,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -2.0,
-                ),
-              ),
-              const Spacer(),
-              SizedBox(
-                width: 300,
-                child: _buildSearchZone(),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Text(
-                'SORT BY: RECENTLY ADDED',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.0,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Icon(Icons.tune_rounded, color: Colors.grey[600], size: 16),
-            ],
-          ),
-        ],
       ),
     );
   }

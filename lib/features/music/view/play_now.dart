@@ -803,35 +803,42 @@ class _PlayNowScreenState extends State<PlayNowScreen>
       builder: (context, child) {
         return SizedBox(
           height: 80,
-          width: 600,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(40, (index) {
-              // Create dynamic height based on animation and index
-              final t = _visualizerController.value;
-              final sinValue = (sin((t * 2 * pi) + (index * 0.5)) + 1) / 2;
-              final variation = (index % 3 + 1) * 20.0 * sinValue;
-              final baseHeight = (index % 5 + 1) * 8.0;
-              final height = widget.isPlaying
-                  ? (baseHeight + variation).clamp(10.0, 70.0)
-                  : baseHeight;
+          width: double.infinity,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              int barCount = constraints.maxWidth == double.infinity
+                  ? 40
+                  : (constraints.maxWidth / 16).floor().clamp(0, 100);
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: List.generate(barCount, (index) {
+                  // Create dynamic height based on animation and index
+                  final t = _visualizerController.value;
+                  final sinValue = (sin((t * 2 * pi) + (index * 0.5)) + 1) / 2;
+                  final variation = (index % 3 + 1) * 20.0 * sinValue;
+                  final baseHeight = (index % 5 + 1) * 8.0;
+                  final height = widget.isPlaying
+                      ? (baseHeight + variation).clamp(10.0, 70.0)
+                      : baseHeight;
 
-              return Container(
-                width: 8,
-                height: height,
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                decoration: BoxDecoration(
-                  color: index == 15 || index == 30 || index == 5
-                      ? widget.color
-                      : Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(2),
-                ),
+                  return Container(
+                    width: 8,
+                    height: height,
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    decoration: BoxDecoration(
+                      color: index == 15 || index == 30 || index == 5
+                          ? widget.color
+                          : Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  );
+                }),
               );
-            }),
+            },
           ),
         );
       },
