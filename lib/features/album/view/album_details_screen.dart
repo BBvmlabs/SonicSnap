@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/core/app_theme.dart';
-import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonic_snap/core/providers/audio_provider.dart';
 import 'package:sonic_snap/data/dummy_data.dart';
 import 'package:sonic_snap/features/music/view/play_now.dart';
+import 'package:sonic_snap/widgets/music_visualizer.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
 
 class AlbumDetailsScreen extends ConsumerStatefulWidget {
   List<Map<String, dynamic>> get songs {
@@ -59,7 +60,7 @@ class _AlbumDetailsScreenState extends ConsumerState<AlbumDetailsScreen> {
               left: 0,
               right: 0,
               bottom: 0,
-              child: audioState.playlist.isNotEmpty ? PlayNowScreen(
+              child: (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? PlayNowScreen(
                 selectedSongIndex: audioState.selectedSongIndex,
                 isBigScreen: widget.isBigScreen,
                 songs: audioState.playlist,
@@ -516,14 +517,25 @@ class _AlbumDetailsScreenState extends ConsumerState<AlbumDetailsScreen> {
   Widget _buildMobileTrackItem(
       BuildContext context, int index, Map<String, dynamic> song) {
     final audioState = ref.watch(audioProvider);
-    final isPlaying = audioState.isPlaying && audioState.playlist == widget.songs && audioState.selectedSongIndex == (index - 1);
+    final currentSong = (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? audioState.playlist[audioState.selectedSongIndex] : null;
+    final isPlaying = audioState.isPlaying && currentSong == song;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       leading: SizedBox(
         width: 32,
         child: isPlaying
-            ? const Icon(Icons.bar_chart, color: AppTheme.primaryCyan)
+            ? const Center(
+                child: MusicVisualizer(
+                  barCount: 4,
+                  height: 16,
+                  width: 16,
+                  barWidth: 2,
+                  gap: 2,
+                  showDots: false,
+                  color: AppTheme.primaryCyan,
+                ),
+              )
             : Text("$index",
                 style: TextStyle(
                     color: Colors.grey[700],
@@ -607,11 +619,16 @@ class _AlbumDetailsScreenState extends ConsumerState<AlbumDetailsScreen> {
 
   Widget _buildDesktopTrackItem(
       BuildContext context, int index, Map<String, dynamic> song) {
+    final audioState = ref.watch(audioProvider);
+    final currentSong = (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? audioState.playlist[audioState.selectedSongIndex] : null;
+    final isPlaying = audioState.isPlaying && currentSong == song;
+
     return Container(
       height: 72,
       margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
+        color: isPlaying ? Colors.white.withOpacity(0.05) : Colors.transparent,
       ),
       child: Material(
         color: Colors.transparent,
@@ -627,7 +644,19 @@ class _AlbumDetailsScreenState extends ConsumerState<AlbumDetailsScreen> {
               children: [
                 SizedBox(
                   width: 40,
-                  child: Text(
+                  child: isPlaying
+                    ? const Center(
+                        child: MusicVisualizer(
+                          barCount: 4,
+                          height: 16,
+                          width: 16,
+                          barWidth: 2,
+                          gap: 2,
+                          showDots: false,
+                          color: AppTheme.primaryCyan,
+                        ),
+                      )
+                    : Text(
                     index.toString().padLeft(2, '0'),
                     style: TextStyle(
                         color: Colors.grey[800],

@@ -2,39 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:sonic_snap/core/app_theme.dart';
 import 'package:sonic_snap/features/music/widgets/bottom_sheets.dart';
 
-class PlaylistDetailsScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> songs = [
-    {
-      'title': 'Breathe',
-      'artist': 'The Prodigy',
-      'duration': '5:33',
-      'image': 'assets/images/artist_1.png'
-    },
-    {
-      'title': 'Firestarter',
-      'artist': 'The Prodigy',
-      'duration': '4:41',
-      'image': 'assets/images/artist_2.png'
-    },
-    {
-      'title': 'Smack My Bitch Up',
-      'artist': 'The Prodigy',
-      'duration': '5:23',
-      'image': 'assets/images/artist_3.png'
-    },
-    {
-      'title': 'Omen',
-      'artist': 'The Prodigy',
-      'duration': '3:36',
-      'image': 'assets/images/artist_4.png'
-    },
-    {
-      'title': 'Voodoo People',
-      'artist': 'The Prodigy',
-      'duration': '5:07',
-      'image': 'assets/images/artist_5.png'
-    },
-  ];
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonic_snap/core/providers/audio_provider.dart';
+import 'package:sonic_snap/data/dummy_data.dart';
+import 'package:sonic_snap/features/music/view/play_now.dart';
+import 'package:sonic_snap/widgets/music_visualizer.dart';
+
+class PlaylistDetailsScreen extends ConsumerStatefulWidget {
+  List<Map<String, dynamic>> get songs {
+    return dummySongs;
+  }
   final String title;
   final String artist;
   final String image;
@@ -49,19 +26,54 @@ class PlaylistDetailsScreen extends StatefulWidget {
   });
 
   @override
-  State<PlaylistDetailsScreen> createState() => _PlaylistDetailsScreenState();
+  ConsumerState<PlaylistDetailsScreen> createState() => _PlaylistDetailsScreenState();
 }
 
-class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
+class _PlaylistDetailsScreenState extends ConsumerState<PlaylistDetailsScreen> {
   @override
   Widget build(BuildContext context) {
+    final audioState = ref.watch(audioProvider);
+
     return Theme(
       data: AppTheme.darkTheme,
-      child: Scaffold(
+      child: PopScope(
+        canPop: !audioState.isPlayerExpanded,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          ref.read(audioProvider.notifier).togglePlayer();
+        },
+        child: Scaffold(
         backgroundColor: AppTheme.darkBg,
-        body: widget.isBigScreen
-            ? buildNewDesktopScreen(context)
-            : buildNewMobileScreen(context),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: widget.isBigScreen
+                  ? buildNewDesktopScreen(context)
+                  : buildNewMobileScreen(context),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? PlayNowScreen(
+                selectedSongIndex: audioState.selectedSongIndex,
+                isBigScreen: widget.isBigScreen,
+                songs: audioState.playlist,
+                isExpanded: audioState.isPlayerExpanded,
+                title: audioState.playlist[audioState.selectedSongIndex]['title'] ?? 'Unknown',
+                image: audioState.playlist[audioState.selectedSongIndex]['image'] ?? 'assets/logo/play_now.png',
+                description: audioState.playlist[audioState.selectedSongIndex]['artist'] ?? 'Unknown Artist',
+                isPlaying: audioState.isPlaying,
+                onTap: () => ref.read(audioProvider.notifier).togglePlayer(),
+                onPlayPause: () => ref.read(audioProvider.notifier).togglePlayPause(),
+                onPrevious: () => ref.read(audioProvider.notifier).previousSong(),
+                onNext: () => ref.read(audioProvider.notifier).nextSong(),
+                color: audioState.playlist[audioState.selectedSongIndex]['color'] ?? Colors.cyanAccent,
+              ) : const SizedBox.shrink(),
+            ),
+          ],
+        ),
+      ),
       ),
     );
   }
@@ -201,7 +213,9 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      ref.read(audioProvider.notifier).playSong(0, newPlaylist: widget.songs);
+                    },
                     icon: const Icon(Icons.play_arrow_rounded, size: 28),
                     label: const Text("PLAY"),
                     style: ElevatedButton.styleFrom(
@@ -235,7 +249,7 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
               final song = widget.songs[index % widget.songs.length];
               return _buildMobileTrackItem(context, index + 1, song);
             },
-            childCount: 15,
+            childCount: widget.songs.length > 0 ? widget.songs.length : 15,
           ),
         ),
         SliverToBoxAdapter(
@@ -359,10 +373,12 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _buildDesktopActionButton(
-                                Icons.play_arrow_rounded, "PLAY", true),
+                                Icons.play_arrow_rounded, "PLAY", true, onTap: () {
+                                  ref.read(audioProvider.notifier).playSong(0, newPlaylist: widget.songs);
+                                }),
                             const SizedBox(width: 16),
                             _buildDesktopActionButton(
-                                Icons.shuffle, "SHUFFLE", false),
+                                Icons.shuffle, "SHUFFLE", false, onTap: () {}),
                             const SizedBox(width: 16),
                             _buildDesktopCircleButton(Icons.favorite_border),
                           ],
@@ -424,7 +440,7 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
                         final song = widget.songs[index % widget.songs.length];
                         return _buildDesktopTrackItem(context, index + 1, song);
                       },
-                      childCount: 12,
+                      childCount: widget.songs.length > 0 ? widget.songs.length : 12,
                     ),
                   ),
                 ),
@@ -438,9 +454,11 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
   }
 
   Widget _buildDesktopActionButton(
-      IconData icon, String label, bool isPrimary) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      IconData icon, String label, bool isPrimary, {VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
       decoration: BoxDecoration(
         color:
             isPrimary ? AppTheme.primaryCyan : Colors.white.withOpacity(0.05),
@@ -470,6 +488,7 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
           ),
         ],
       ),
+      ),
     );
   }
 
@@ -492,14 +511,26 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
 
   Widget _buildMobileTrackItem(
       BuildContext context, int index, Map<String, dynamic> song) {
-    final isPlaying = index == 3;
+    final audioState = ref.watch(audioProvider);
+    final currentSong = (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? audioState.playlist[audioState.selectedSongIndex] : null;
+    final isPlaying = audioState.isPlaying && currentSong == song;
 
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       leading: SizedBox(
         width: 32,
         child: isPlaying
-            ? const Icon(Icons.bar_chart, color: AppTheme.primaryCyan)
+            ? const Center(
+                child: MusicVisualizer(
+                  barCount: 4,
+                  height: 16,
+                  width: 16,
+                  barWidth: 2,
+                  gap: 2,
+                  showDots: false,
+                  color: AppTheme.primaryCyan,
+                ),
+              )
             : Text("$index",
                 style: TextStyle(
                     color: Colors.grey[700],
@@ -544,7 +575,9 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
           ),
         ],
       ),
-      onTap: () {},
+      onTap: () {
+        ref.read(audioProvider.notifier).playSong(index - 1, newPlaylist: widget.songs);
+      },
     );
   }
 
@@ -581,16 +614,23 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
 
   Widget _buildDesktopTrackItem(
       BuildContext context, int index, Map<String, dynamic> song) {
+    final audioState = ref.watch(audioProvider);
+    final currentSong = (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? audioState.playlist[audioState.selectedSongIndex] : null;
+    final isPlaying = audioState.isPlaying && currentSong == song;
+
     return Container(
       height: 72,
       margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
+        color: isPlaying ? Colors.white.withOpacity(0.05) : Colors.transparent,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            ref.read(audioProvider.notifier).playSong(index - 1, newPlaylist: widget.songs);
+          },
           borderRadius: BorderRadius.circular(12),
           hoverColor: Colors.white.withOpacity(0.03),
           child: Padding(
@@ -599,7 +639,19 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
               children: [
                 SizedBox(
                   width: 40,
-                  child: Text(
+                  child: isPlaying
+                    ? const Center(
+                        child: MusicVisualizer(
+                          barCount: 4,
+                          height: 16,
+                          width: 16,
+                          barWidth: 2,
+                          gap: 2,
+                          showDots: false,
+                          color: AppTheme.primaryCyan,
+                        ),
+                      )
+                    : Text(
                     index.toString().padLeft(2, '0'),
                     style: TextStyle(
                         color: Colors.grey[800],
@@ -628,7 +680,7 @@ class _PlaylistDetailsScreenState extends State<PlaylistDetailsScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            song['widget.title'].toUpperCase(),
+                            song['title'].toUpperCase(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 15,

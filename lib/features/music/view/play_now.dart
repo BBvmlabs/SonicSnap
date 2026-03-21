@@ -8,8 +8,11 @@ import 'package:sonic_snap/features/music/widgets/action_buttons_widget.dart';
 import 'package:sonic_snap/features/music/widgets/audio_quality_badge.dart';
 import 'package:sonic_snap/features/music/widgets/mini_player_widget.dart';
 import 'package:sonic_snap/widgets/build_tag.dart';
+import 'package:sonic_snap/widgets/auto_scroll_text.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonic_snap/core/providers/audio_provider.dart';
 
-class PlayNowScreen extends StatefulWidget {
+class PlayNowScreen extends ConsumerStatefulWidget {
   final int selectedSongIndex;
   final List<Map<String, dynamic>> songs;
   final bool isExpanded;
@@ -42,10 +45,10 @@ class PlayNowScreen extends StatefulWidget {
   });
 
   @override
-  State<PlayNowScreen> createState() => _PlayNowScreenState();
+  ConsumerState<PlayNowScreen> createState() => _PlayNowScreenState();
 }
 
-class _PlayNowScreenState extends State<PlayNowScreen>
+class _PlayNowScreenState extends ConsumerState<PlayNowScreen>
     with TickerProviderStateMixin {
   late bool isExpanded;
   double currentPosition = 55; // in seconds
@@ -356,8 +359,8 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                   children: [
                     // Large Artwork
                     Container(
-                      width: 420,
-                      height: 420,
+                      width: 378,
+                      height: 378,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
                         image: DecorationImage(
@@ -374,7 +377,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 20),
-                          Text(
+                          AutoScrollText(
                             nowPlaying['title'].toUpperCase(),
                             style: const TextStyle(
                               color: Colors.white,
@@ -385,7 +388,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
                             ),
                           ),
                           const SizedBox(height: 16),
-                          Text(
+                          AutoScrollText(
                             nowPlaying['description']?.toUpperCase() ??
                                 'ARCHITECTS OF VOID',
                             style: TextStyle(
@@ -471,7 +474,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text(
-                  'UP NEXT',
+                  'QUEUE',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 12,
@@ -486,13 +489,16 @@ class _PlayNowScreenState extends State<PlayNowScreen>
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: widget.songs.length - 1,
+                  itemCount: widget.songs.length,
                   itemBuilder: (context, index) {
-                    // Skip currently playing song for the "Up Next" list
-                    final songIndex = (widget.selectedSongIndex + index + 1) %
-                        widget.songs.length;
-                    final song = widget.songs[songIndex];
-                    return _buildQueueItem(song, index + 1);
+                    final song = widget.songs[index];
+                    final isSelected = index == widget.selectedSongIndex;
+                    return GestureDetector(
+                      onTap: () {
+                        ref.read(audioProvider.notifier).playSong(index, newPlaylist: widget.songs);
+                      },
+                      child: _buildQueueItem(song, index + 1, isSelected),
+                    );
                   },
                 ),
               ),
@@ -503,12 +509,13 @@ class _PlayNowScreenState extends State<PlayNowScreen>
     );
   }
 
-  Widget _buildQueueItem(Map<String, dynamic> song, int displayIndex) {
+  Widget _buildQueueItem(Map<String, dynamic> song, int displayIndex, bool isSelected) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.03),
+        color: isSelected ? Colors.white.withValues(alpha: 0.1) : Colors.white.withValues(alpha: 0.03),
+        border: isSelected ? Border.all(color: widget.color, width: 1) : null,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -518,6 +525,7 @@ class _PlayNowScreenState extends State<PlayNowScreen>
             height: 48,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
+              border: isSelected ? Border.all(color: widget.color, width: 2) : null,
               image: DecorationImage(
                 image: AssetImage(song['image']),
                 fit: BoxFit.cover,

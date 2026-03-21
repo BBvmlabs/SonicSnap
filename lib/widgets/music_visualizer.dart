@@ -117,34 +117,37 @@ class _MusicVisualizerState extends State<MusicVisualizer>
         SizedBox(
           width: widget.width,
           height: widget.height,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: List.generate(widget.barCount, (index) {
-              return Container(
-                margin: EdgeInsets.symmetric(horizontal: widget.gap),
-                width: widget.barWidth,
-                height: widget.height * _heights[index],
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      widget.color,
-                      widget.color.withValues(alpha: 0.5),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: List.generate(widget.barCount, (index) {
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: widget.gap),
+                  width: widget.barWidth,
+                  height: widget.height * _heights[index],
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        widget.color,
+                        widget.color.withValues(alpha: 0.5),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: widget.color.withValues(alpha: 0.5),
+                        blurRadius: widget.barWidth * 2,
+                        spreadRadius: 1,
+                      ),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: widget.color.withValues(alpha: 0.5),
-                      blurRadius: widget.barWidth * 2,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-              );
-            }),
+                );
+              }),
+            ),
           ),
         ),
       ],

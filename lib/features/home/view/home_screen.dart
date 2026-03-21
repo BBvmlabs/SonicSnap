@@ -135,7 +135,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
               left: 0,
               right: 0,
               bottom: 0,
-              child: audioState.playlist.isNotEmpty ? PlayNowScreen(
+              child: (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? PlayNowScreen(
                 selectedSongIndex: audioState.selectedSongIndex,
                 isBigScreen: isBigScreen,
                 songs: audioState.playlist,
