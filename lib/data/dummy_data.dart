@@ -50,4 +50,32 @@ final List<Map<String, dynamic>> dummySongs = [
     "color": Colors.orangeAccent,
     "duration": "4:40",
   },
+  {
+    "title": "Aalaporaan Thamizhan",
+    "artist": "A.R. Rahman • Mersal",
+    "image": "assets/logo/newlogo.png",
+    "color": Colors.redAccent,
+    "duration": "5:48",
+  },
+  {
+    "title": "Naan Pizhai",
+    "artist": "Anirudh Ravichander • Kaathuvaakula Rendu Kaadhal",
+    "image": "assets/logo/applogo.png",
+    "color": Colors.pink,
+    "duration": "4:12",
+  },
+  {
+    "title": "Arabic Kuthu",
+    "artist": "Anirudh Ravichander • Beast",
+    "image": "assets/logo/play_now.png",
+    "color": Colors.amber,
+    "duration": "4:39",
+  },
+  {
+    "title": "Rowdy Baby",
+    "artist": "Yuvan Shankar Raja • Maari 2",
+    "image": "assets/logo/newlogo.png",
+    "color": Colors.deepPurple,
+    "duration": "4:44",
+  },
 ];

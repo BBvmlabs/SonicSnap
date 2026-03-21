@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sonic_snap/features/album/view/album_screen.dart';
-import 'package:sonic_snap/data/dummy_data.dart';
 import 'package:sonic_snap/features/artist/view/artist_screen.dart';
 import 'package:sonic_snap/features/home/view/home_content.dart';
 import 'package:sonic_snap/features/library/view/library_screen.dart';
@@ -11,44 +10,25 @@ import 'package:sonic_snap/features/playlist/view/playlist_screen.dart';
 import 'package:sonic_snap/features/settings/view/settings_screen.dart';
 import 'package:sonic_snap/features/tracks/view/tracks_list.dart';
 
-class HomeScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonic_snap/core/providers/audio_provider.dart';
+
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
 enum NavState { home, album, artist, tracks, playlists, settings }
 
 enum MobileNavState { home, search, library }
 
-class _HomeScreenState extends State<HomeScreen>
+class _HomeScreenState extends ConsumerState<HomeScreen>
     with SingleTickerProviderStateMixin {
-  bool isPlaying = false;
-  bool isPlayerExpanded = false;
   bool isBigScreen = false;
   int _selectedScreenIndex = 0;
-  int _selectedSongIndex = 0;
   NavState _currentNav = NavState.home;
-
-  void _nextSong() {
-    setState(() {
-      _selectedSongIndex = (_selectedSongIndex + 1) % dummySongs.length;
-    });
-  }
-
-  void _previousSong() {
-    setState(() {
-      _selectedSongIndex =
-          (_selectedSongIndex - 1 + dummySongs.length) % dummySongs.length;
-    });
-  }
-
-  void _togglePlayer() {
-    setState(() {
-      isPlayerExpanded = !isPlayerExpanded;
-    });
-  }
 
   Widget _buildMobileScreenLayout() {
     switch (MobileNavState.values[_selectedScreenIndex]) {
@@ -101,13 +81,14 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final audioState = ref.watch(audioProvider);
     isBigScreen = MediaQuery.of(context).size.width >
         900; // Increased threshold for wide layout
     return PopScope(
-      canPop: !isPlayerExpanded,
+      canPop: !audioState.isPlayerExpanded,
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-        _togglePlayer();
+        ref.read(audioProvider.notifier).togglePlayer();
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF0D1117),
@@ -154,25 +135,21 @@ class _HomeScreenState extends State<HomeScreen>
               left: 0,
               right: 0,
               bottom: 0,
-              child: PlayNowScreen(
-                selectedSongIndex: _selectedSongIndex,
+              child: audioState.playlist.isNotEmpty ? PlayNowScreen(
+                selectedSongIndex: audioState.selectedSongIndex,
                 isBigScreen: isBigScreen,
-                songs: dummySongs,
-                isExpanded: isPlayerExpanded,
-                title: dummySongs[_selectedSongIndex]['title'],
-                image: dummySongs[_selectedSongIndex]['image'],
-                description: dummySongs[_selectedSongIndex]['artist'],
-                isPlaying: isPlaying,
-                onTap: _togglePlayer,
-                onPlayPause: () {
-                  setState(() {
-                    isPlaying = !isPlaying;
-                  });
-                },
-                onPrevious: _previousSong,
-                onNext: _nextSong,
-                color: dummySongs[_selectedSongIndex]['color'],
-              ),
+                songs: audioState.playlist,
+                isExpanded: audioState.isPlayerExpanded,
+                title: audioState.playlist[audioState.selectedSongIndex]['title'] ?? 'Unknown',
+                image: audioState.playlist[audioState.selectedSongIndex]['image'] ?? 'assets/logo/play_now.png',
+                description: audioState.playlist[audioState.selectedSongIndex]['artist'] ?? 'Unknown Artist',
+                isPlaying: audioState.isPlaying,
+                onTap: () => ref.read(audioProvider.notifier).togglePlayer(),
+                onPlayPause: () => ref.read(audioProvider.notifier).togglePlayPause(),
+                onPrevious: () => ref.read(audioProvider.notifier).previousSong(),
+                onNext: () => ref.read(audioProvider.notifier).nextSong(),
+                color: audioState.playlist[audioState.selectedSongIndex]['color'] ?? Colors.cyanAccent,
+              ) : const SizedBox.shrink(),
             ),
           ],
         ),

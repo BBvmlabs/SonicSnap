@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:sonic_snap/data/dummy_data.dart';
 import 'package:sonic_snap/widgets/app_logo.dart';
 
-class HomeContent extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonic_snap/core/providers/audio_provider.dart';
+
+class HomeContent extends ConsumerWidget {
   const HomeContent({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool isBigScreen = MediaQuery.of(context).size.width > 900;
 
     return Scaffold(
@@ -27,20 +30,20 @@ class HomeContent extends StatelessWidget {
                   child: _buildSectionTitle("LAST PLAYED"),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildHorizontalCardList(isBigScreen, height: 220),
+                  child: _buildHorizontalCardList(isBigScreen, ref, height: 220),
                 ),
                 SliverToBoxAdapter(
                   child: _buildSectionTitle("TOP 50 GLOBAL"),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildHorizontalCardList(isBigScreen,
+                  child: _buildHorizontalCardList(isBigScreen, ref,
                       height: 180, isCircular: true),
                 ),
                 SliverToBoxAdapter(
                   child: _buildSectionTitle("RECENTLY ADDED PLAYLISTS"),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildHorizontalCardList(isBigScreen, height: 200),
+                  child: _buildHorizontalCardList(isBigScreen, ref, height: 200),
                 ),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 120), // bottom padding for player
@@ -73,20 +76,20 @@ class HomeContent extends StatelessWidget {
                   child: _buildSectionTitle("LAST PLAYED"),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildHorizontalCardList(isBigScreen, height: 220),
+                  child: _buildHorizontalCardList(isBigScreen, ref, height: 220),
                 ),
                 SliverToBoxAdapter(
                   child: _buildSectionTitle("TOP 50 TRACKS"),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildHorizontalCardList(isBigScreen,
+                  child: _buildHorizontalCardList(isBigScreen, ref,
                       height: 180, isCircular: true),
                 ),
                 SliverToBoxAdapter(
                   child: _buildSectionTitle("RECENTLY ADDED PLAYLISTS"),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildHorizontalCardList(isBigScreen, height: 200),
+                  child: _buildHorizontalCardList(isBigScreen, ref, height: 200),
                 ),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 120), // bottom padding for player
@@ -250,7 +253,7 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  Widget _buildHorizontalCardList(bool isBigScreen,
+  Widget _buildHorizontalCardList(bool isBigScreen, WidgetRef ref,
       {required double height, bool isCircular = false}) {
     return SizedBox(
       height: height,
@@ -260,7 +263,9 @@ class HomeContent extends StatelessWidget {
         itemCount: dummySongs.length,
         itemBuilder: (context, index) {
           final song = dummySongs[index];
-          return Container(
+          return GestureDetector(
+            onTap: () => ref.read(audioProvider.notifier).playSong(index, newPlaylist: dummySongs),
+            child: Container(
             width: isCircular ? height - 40 : 160,
             margin: const EdgeInsets.symmetric(horizontal: 8),
             child: Column(
@@ -314,6 +319,7 @@ class HomeContent extends StatelessWidget {
                 ),
               ],
             ),
+          ),
           );
         },
       ),

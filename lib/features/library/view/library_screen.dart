@@ -22,8 +22,8 @@ class _libraryScreenState extends State<libraryScreen>
 
   List<Widget> tabs = [
     const AlbumScreen(),
-    const ArtistScreen(),
     const TracksListScreen(),
+    const ArtistScreen(),
     const PlaylistScreen(),
   ];
 
@@ -54,10 +54,10 @@ class _libraryScreenState extends State<libraryScreen>
                   text: 'Albums',
                 ),
                 Tab(
-                  text: 'Artists',
+                  text: 'Tracks',
                 ),
                 Tab(
-                  text: 'Tracks',
+                  text: 'Artists',
                 ),
                 Tab(
                   text: 'Playlists',

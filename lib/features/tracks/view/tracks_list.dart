@@ -7,17 +7,17 @@ import 'package:sonic_snap/routes/router.dart';
 import 'package:sonic_snap/widgets/build_tag.dart';
 import 'package:sonic_snap/widgets/title_bar.dart';
 
-class TracksListScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sonic_snap/core/providers/audio_provider.dart';
+
+class TracksListScreen extends ConsumerStatefulWidget {
   const TracksListScreen({super.key});
 
   @override
-  State<TracksListScreen> createState() => _TracksListScreenState();
+  ConsumerState<TracksListScreen> createState() => _TracksListScreenState();
 }
 
-class _TracksListScreenState extends State<TracksListScreen> {
-  int _selectedSongIndex = -1;
-  bool isPlaying = false;
-
+class _TracksListScreenState extends ConsumerState<TracksListScreen> {
   void _navigateToAlbum(Map<String, dynamic> song) {
     navigate(context, AppRouter.albumDetailsScreen, extra: {
       'title': "The Fat of the Land",
@@ -92,13 +92,11 @@ class _TracksListScreenState extends State<TracksListScreen> {
       itemCount: dummySongs.length,
       itemBuilder: (context, index) {
         final song = dummySongs[index];
-        final isSelected = _selectedSongIndex == index;
+        final audioState = ref.watch(audioProvider);
+        final isSelected = audioState.selectedSongIndex == index;
         return GestureDetector(
           onTap: () {
-            setState(() {
-              _selectedSongIndex = index;
-              isPlaying = true;
-            });
+            ref.read(audioProvider.notifier).playSong(index);
           },
           child: Container(
             height: 72,
@@ -278,19 +276,17 @@ class _TracksListScreenState extends State<TracksListScreen> {
       itemCount: dummySongs.length,
       itemBuilder: (context, index) {
         final song = dummySongs[index];
+        final audioState = ref.watch(audioProvider);
         return SongCard(
           title: song['title'],
           artist: song['artist'],
           imageUrl: song['image'],
           color: song['color'],
           duration: song['duration'] ?? "3:45",
-          isSelected: _selectedSongIndex == index,
-          isPlaying: isPlaying && _selectedSongIndex == index,
+          isSelected: audioState.selectedSongIndex == index,
+          isPlaying: audioState.isPlaying && audioState.selectedSongIndex == index,
           onTap: () {
-            setState(() {
-              _selectedSongIndex = index;
-              isPlaying = true;
-            });
+            ref.read(audioProvider.notifier).playSong(index);
           },
           onMore: () {
             showSongOptionsSheet(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sonic_snap/data/dummy_data.dart';
 import 'package:sonic_snap/features/artist/view/artist_details_screen.dart';
 
 class ArtistGridWidget extends StatefulWidget {
@@ -9,80 +10,27 @@ class ArtistGridWidget extends StatefulWidget {
 }
 
 class _ArtistGridWidgetState extends State<ArtistGridWidget> {
-  final List<Map<String, dynamic>> _artists = [
-    {
-      "title": "The Fat of the Land",
-      "artist": "The Prodigy",
-      "image": "https://picsum.photos/seed/artist1/400/400",
-      "tracks": 10,
-      "year": "1997",
-      "color": Colors.orange,
-    },
-    {
-      "title": "Hurry Up, We're Dreaming",
-      "artist": "M83",
-      "image": "https://picsum.photos/seed/artist2/400/400",
-      "tracks": 22,
-      "year": "2011",
-      "color": Colors.blue,
-    },
-    {
-      "title": "Random Access Memories",
-      "artist": "Daft Punk",
-      "image": "https://picsum.photos/seed/artist3/400/400",
-      "tracks": 13,
-      "year": "2013",
-      "color": Colors.grey,
-    },
-    {
-      "title": "Discovery",
-      "artist": "Daft Punk",
-      "image": "https://picsum.photos/seed/artist4/400/400",
-      "tracks": 14,
-      "year": "2001",
-      "color": Colors.blueGrey,
-    },
-    {
-      "title": "Homework",
-      "artist": "Daft Punk",
-      "image": "https://picsum.photos/seed/artist5/400/400",
-      "tracks": 16,
-      "year": "1997",
-      "color": Colors.red,
-    },
-    {
-      "title": "Mezzanine",
-      "artist": "Massive Attack",
-      "image": "https://picsum.photos/seed/artist6/400/400",
-      "tracks": 11,
-      "year": "1998",
-      "color": Colors.green,
-    },
-    {
-      "title": "Dummy",
-      "artist": "Portishead",
-      "image": "https://picsum.photos/seed/artist7/400/400",
-      "tracks": 11,
-      "year": "1994",
-      "color": Colors.indigo,
-    },
-    {
-      "title": "Untrue",
-      "artist": "Burial",
-      "image": "https://picsum.photos/seed/artist8/400/400",
-      "tracks": 13,
-      "year": "2007",
-      "color": Colors.black,
-    },
-    {
-      "title": "Music Has the Right to Children",
-      "artist": "Boards of Canada",
-      "image": "https://picsum.photos/seed/artist9/400/400",
-      "tracks": 18,
-      "year": "1998",
-      "color": Colors.teal,
-    },
-  ];
+  List<Map<String, dynamic>> get _artists {
+    final Map<String, Map<String, dynamic>> artistMap = {};
+    for (var song in dummySongs) {
+      final parts = song['artist'].split(' • ');
+      final artistName = parts[0];
+      
+      if (!artistMap.containsKey(artistName)) {
+        artistMap[artistName] = {
+          'title': artistName,
+          'artist': 'Artist',
+          'image': song['image'],
+          'tracks': 1,
+          'year': '2023',
+          'color': song['color'],
+        };
+      } else {
+        artistMap[artistName]!['tracks'] = (artistMap[artistName]!['tracks'] as int) + 1;
+      }
+    }
+    return artistMap.values.toList();
+  }
 
   @override
   Widget build(BuildContext context) {

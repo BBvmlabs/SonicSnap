@@ -42,12 +42,9 @@ class AlbumArtWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              child: Center(
-                child: Icon(
-                  Icons.music_note,
-                  size: 120,
-                  color: Colors.white.withValues(alpha: 0.8),
-                ),
+              child: Image.asset(
+                image,
+                fit: BoxFit.cover,
               ),
             ),
           ),
