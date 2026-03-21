@@ -9,6 +9,7 @@ import 'package:sonic_snap/widgets/title_bar.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sonic_snap/core/providers/audio_provider.dart';
+import 'package:sonic_snap/widgets/music_visualizer.dart';
 
 class TracksListScreen extends ConsumerStatefulWidget {
   const TracksListScreen({super.key});
@@ -93,10 +94,11 @@ class _TracksListScreenState extends ConsumerState<TracksListScreen> {
       itemBuilder: (context, index) {
         final song = dummySongs[index];
         final audioState = ref.watch(audioProvider);
-        final isSelected = audioState.selectedSongIndex == index;
+        final isSelected = audioState.playlist == dummySongs && audioState.selectedSongIndex == index;
+        final isPlaying = audioState.isPlaying && isSelected;
         return GestureDetector(
           onTap: () {
-            ref.read(audioProvider.notifier).playSong(index);
+            ref.read(audioProvider.notifier).playSong(index, newPlaylist: dummySongs);
           },
           child: Container(
             height: 72,
@@ -116,7 +118,19 @@ class _TracksListScreenState extends ConsumerState<TracksListScreen> {
               children: [
                 SizedBox(
                   width: 50,
-                  child: Text(
+                  child: isPlaying
+                      ? const Center(
+                          child: MusicVisualizer(
+                            barCount: 4,
+                            height: 16,
+                            width: 16,
+                            barWidth: 2,
+                            gap: 2,
+                            showDots: false,
+                            color: Colors.cyanAccent,
+                          ),
+                        )
+                      : Text(
                     (index + 1).toString().padLeft(2, '0'),
                     style: TextStyle(
                       color: isSelected
@@ -284,9 +298,9 @@ class _TracksListScreenState extends ConsumerState<TracksListScreen> {
           color: song['color'],
           duration: song['duration'] ?? "3:45",
           isSelected: audioState.selectedSongIndex == index,
-          isPlaying: audioState.isPlaying && audioState.selectedSongIndex == index,
+          isPlaying: audioState.isPlaying && audioState.playlist == dummySongs && audioState.selectedSongIndex == index,
           onTap: () {
-            ref.read(audioProvider.notifier).playSong(index);
+            ref.read(audioProvider.notifier).playSong(index, newPlaylist: dummySongs);
           },
           onMore: () {
             showSongOptionsSheet(
