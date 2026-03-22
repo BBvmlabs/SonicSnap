@@ -155,7 +155,7 @@ class _PlaylistCardState extends State<_PlaylistCard> {
           duration: const Duration(milliseconds: 200),
           decoration: BoxDecoration(
             color: _isHovered
-                ? Colors.white.withOpacity(0.05)
+                ? Colors.white.withValues(alpha: 0.05)
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
           ),
@@ -170,7 +170,7 @@ class _PlaylistCardState extends State<_PlaylistCard> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.4),
+                            color: Colors.black.withValues(alpha: 0.4),
                             blurRadius: 15,
                             offset: const Offset(0, 8),
                           ),
@@ -195,7 +195,7 @@ class _PlaylistCardState extends State<_PlaylistCard> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.cyanAccent.withOpacity(0.4),
+                                color: Colors.cyanAccent.withValues(alpha: 0.4),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -235,7 +235,7 @@ class _PlaylistCardState extends State<_PlaylistCard> {
               Text(
                 "${widget.playlist['tracks']} TRACKS",
                 style: TextStyle(
-                  color: Colors.cyanAccent.shade400.withOpacity(0.7),
+                  color: Colors.cyanAccent.shade400.withValues(alpha: 0.7),
                   fontSize: 10,
                   fontWeight: FontWeight.w800,
                   letterSpacing: 1.0,

@@ -17,12 +17,13 @@ class ArtistDetailsScreen extends ConsumerStatefulWidget {
     }).toList();
     return artistSongs.isNotEmpty ? artistSongs : dummySongs;
   }
+
   final String title;
   final String artist;
   final String image;
   final bool isBigScreen;
 
-  ArtistDetailsScreen({
+  const ArtistDetailsScreen({
     super.key,
     required this.title,
     required this.artist,
@@ -31,54 +32,73 @@ class ArtistDetailsScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ArtistDetailsScreen> createState() => _ArtistDetailsScreenState();
+  ConsumerState<ArtistDetailsScreen> createState() =>
+      _ArtistDetailsScreenState();
 }
 
 class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final audioState = ref.watch(audioProvider);
-    
+
     return Theme(
       data: AppTheme.darkTheme,
       child: PopScope(
         canPop: !audioState.isPlayerExpanded,
         onPopInvokedWithResult: (didPop, result) {
           if (didPop) return;
-          ref.read(audioProvider.notifier). togglePlayer();
+          ref.read(audioProvider.notifier).togglePlayer();
         },
         child: Scaffold(
-        backgroundColor: AppTheme.darkBg,
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: widget.isBigScreen
-                  ? buildNewDesktopScreen(context)
-                  : buildNewMobileScreen(context),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? PlayNowScreen(
-                selectedSongIndex: audioState.selectedSongIndex,
-                isBigScreen: widget.isBigScreen,
-                songs: audioState.playlist,
-                isExpanded: audioState.isPlayerExpanded,
-                title: audioState.playlist[audioState.selectedSongIndex]['title'] ?? 'Unknown',
-                image: audioState.playlist[audioState.selectedSongIndex]['image'] ?? 'assets/logo/play_now.png',
-                description: audioState.playlist[audioState.selectedSongIndex]['artist'] ?? 'Unknown Artist',
-                isPlaying: audioState.isPlaying,
-                onTap: () => ref.read(audioProvider.notifier).togglePlayer(),
-                onPlayPause: () => ref.read(audioProvider.notifier).togglePlayPause(),
-                onPrevious: () => ref.read(audioProvider.notifier).previousSong(),
-                onNext: () => ref.read(audioProvider.notifier).nextSong(),
-                color: audioState.playlist[audioState.selectedSongIndex]['color'] ?? Colors.cyanAccent,
-              ) : const SizedBox.shrink(),
-            ),
-          ],
+          backgroundColor: AppTheme.darkBg,
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: widget.isBigScreen
+                    ? buildNewDesktopScreen(context)
+                    : buildNewMobileScreen(context),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: (audioState.playlist.isNotEmpty &&
+                        audioState.selectedSongIndex >= 0 &&
+                        audioState.selectedSongIndex <
+                            audioState.playlist.length)
+                    ? PlayNowScreen(
+                        selectedSongIndex: audioState.selectedSongIndex,
+                        isBigScreen: widget.isBigScreen,
+                        songs: audioState.playlist,
+                        isExpanded: audioState.isPlayerExpanded,
+                        title: audioState.playlist[audioState.selectedSongIndex]
+                                ['title'] ??
+                            'Unknown',
+                        image: audioState.playlist[audioState.selectedSongIndex]
+                                ['image'] ??
+                            'assets/logo/play_now.png',
+                        description:
+                            audioState.playlist[audioState.selectedSongIndex]
+                                    ['artist'] ??
+                                'Unknown Artist',
+                        isPlaying: audioState.isPlaying,
+                        onTap: () =>
+                            ref.read(audioProvider.notifier).togglePlayer(),
+                        onPlayPause: () =>
+                            ref.read(audioProvider.notifier).togglePlayPause(),
+                        onPrevious: () =>
+                            ref.read(audioProvider.notifier).previousSong(),
+                        onNext: () =>
+                            ref.read(audioProvider.notifier).nextSong(),
+                        color: audioState.playlist[audioState.selectedSongIndex]
+                                ['color'] ??
+                            Colors.cyanAccent,
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
@@ -95,7 +115,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha: 0.5),
                 shape: BoxShape.circle,
               ),
               child:
@@ -108,7 +128,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
               icon: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.favorite_border,
@@ -121,7 +141,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
               icon: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   shape: BoxShape.circle,
                 ),
                 child:
@@ -144,8 +164,8 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.2),
-                        AppTheme.darkBg.withOpacity(0.8),
+                        Colors.black.withValues(alpha: 0.2),
+                        AppTheme.darkBg.withValues(alpha: 0.8),
                         AppTheme.darkBg,
                       ],
                       stops: const [0.0, 0.7, 1.0],
@@ -219,7 +239,9 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      ref.read(audioProvider.notifier).playSong(0, newPlaylist: widget.songs);
+                      ref
+                          .read(audioProvider.notifier)
+                          .playSong(0, newPlaylist: widget.songs);
                     },
                     icon: const Icon(Icons.play_arrow_rounded, size: 28),
                     label: const Text("PLAY"),
@@ -235,7 +257,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                 const SizedBox(width: 16),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: IconButton(
@@ -254,7 +276,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
               final song = widget.songs[index % widget.songs.length];
               return _buildMobileTrackItem(context, index + 1, song);
             },
-            childCount: widget.songs.length > 0 ? widget.songs.length : 15,
+            childCount: widget.songs.isNotEmpty ? widget.songs.length : 15,
           ),
         ),
         SliverToBoxAdapter(
@@ -295,7 +317,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  AppTheme.primaryCyan.withOpacity(0.1),
+                  AppTheme.primaryCyan.withValues(alpha: 0.1),
                   AppTheme.darkBg,
                 ],
               ),
@@ -309,7 +331,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                     icon: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.05),
+                        color: Colors.white.withValues(alpha: 0.05),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.arrow_back, color: Colors.white),
@@ -333,12 +355,12 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                               borderRadius: BorderRadius.circular(24),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.6),
+                                  color: Colors.black.withValues(alpha: 0.6),
                                   blurRadius: 60,
                                   offset: const Offset(0, 30),
                                 ),
                                 BoxShadow(
-                                  color: AppTheme.primaryCyan.withOpacity(0.1),
+                                  color: AppTheme.primaryCyan.withValues(alpha: 0.1),
                                   blurRadius: 100,
                                   spreadRadius: -20,
                                 ),
@@ -378,12 +400,16 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _buildDesktopActionButton(
-                                Icons.play_arrow_rounded, "PLAY", true, onTap: () {
-                                  ref.read(audioProvider.notifier).playSong(0, newPlaylist: widget.songs);
-                                }),
+                                Icons.play_arrow_rounded, "PLAY", true,
+                                onTap: () {
+                              ref
+                                  .read(audioProvider.notifier)
+                                  .playSong(0, newPlaylist: widget.songs);
+                            }),
                             const SizedBox(width: 16),
                             _buildDesktopActionButton(
-                                Icons.shuffle, "SHUFFLE", false, onTap: () {}),
+                                Icons.shuffle, "SHUFFLE", false,
+                                onTap: () {}),
                             const SizedBox(width: 16),
                             _buildDesktopCircleButton(Icons.favorite_border),
                           ],
@@ -445,7 +471,8 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                         final song = widget.songs[index % widget.songs.length];
                         return _buildDesktopTrackItem(context, index + 1, song);
                       },
-                      childCount: widget.songs.length > 0 ? widget.songs.length : 12,
+                      childCount:
+                          widget.songs.isNotEmpty ? widget.songs.length : 12,
                     ),
                   ),
                 ),
@@ -458,41 +485,42 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
     );
   }
 
-  Widget _buildDesktopActionButton(
-      IconData icon, String label, bool isPrimary, {VoidCallback? onTap}) {
+  Widget _buildDesktopActionButton(IconData icon, String label, bool isPrimary,
+      {VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         decoration: BoxDecoration(
-        color:
-            isPrimary ? AppTheme.primaryCyan : Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: isPrimary
-            ? [
-                BoxShadow(
-                  color: AppTheme.primaryCyan.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
-                )
-              ]
-            : [],
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: isPrimary ? Colors.black : Colors.white, size: 24),
-          const SizedBox(width: 12),
-          Text(
-            label,
-            style: TextStyle(
-              color: isPrimary ? Colors.black : Colors.white,
-              fontWeight: FontWeight.w900,
-              fontSize: 16,
-              letterSpacing: 1.0,
+          color:
+              isPrimary ? AppTheme.primaryCyan : Colors.white.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isPrimary
+              ? [
+                  BoxShadow(
+                    color: AppTheme.primaryCyan.withValues(alpha: 0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  )
+                ]
+              : [],
+        ),
+        child: Row(
+          children: [
+            Icon(icon,
+                color: isPrimary ? Colors.black : Colors.white, size: 24),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: TextStyle(
+                color: isPrimary ? Colors.black : Colors.white,
+                fontWeight: FontWeight.w900,
+                fontSize: 16,
+                letterSpacing: 1.0,
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }
@@ -501,7 +529,7 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: Colors.white, size: 24),
@@ -517,7 +545,11 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
   Widget _buildMobileTrackItem(
       BuildContext context, int index, Map<String, dynamic> song) {
     final audioState = ref.watch(audioProvider);
-    final currentSong = (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? audioState.playlist[audioState.selectedSongIndex] : null;
+    final currentSong = (audioState.playlist.isNotEmpty &&
+            audioState.selectedSongIndex >= 0 &&
+            audioState.selectedSongIndex < audioState.playlist.length)
+        ? audioState.playlist[audioState.selectedSongIndex]
+        : null;
     final isPlaying = audioState.isPlaying && currentSong == song;
 
     return ListTile(
@@ -581,7 +613,9 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
         ],
       ),
       onTap: () {
-        ref.read(audioProvider.notifier).playSong(index - 1, newPlaylist: widget.songs);
+        ref
+            .read(audioProvider.notifier)
+            .playSong(index - 1, newPlaylist: widget.songs);
       },
     );
   }
@@ -620,7 +654,11 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
   Widget _buildDesktopTrackItem(
       BuildContext context, int index, Map<String, dynamic> song) {
     final audioState = ref.watch(audioProvider);
-    final currentSong = (audioState.playlist.isNotEmpty && audioState.selectedSongIndex >= 0 && audioState.selectedSongIndex < audioState.playlist.length) ? audioState.playlist[audioState.selectedSongIndex] : null;
+    final currentSong = (audioState.playlist.isNotEmpty &&
+            audioState.selectedSongIndex >= 0 &&
+            audioState.selectedSongIndex < audioState.playlist.length)
+        ? audioState.playlist[audioState.selectedSongIndex]
+        : null;
     final isPlaying = audioState.isPlaying && currentSong == song;
 
     return Container(
@@ -628,16 +666,18 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
       margin: const EdgeInsets.only(bottom: 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: isPlaying ? Colors.white.withOpacity(0.05) : Colors.transparent,
+        color: isPlaying ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            ref.read(audioProvider.notifier).playSong(index - 1, newPlaylist: widget.songs);
+            ref
+                .read(audioProvider.notifier)
+                .playSong(index - 1, newPlaylist: widget.songs);
           },
           borderRadius: BorderRadius.circular(12),
-          hoverColor: Colors.white.withOpacity(0.03),
+          hoverColor: Colors.white.withValues(alpha: 0.03),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
@@ -645,24 +685,24 @@ class _ArtistDetailsScreenState extends ConsumerState<ArtistDetailsScreen> {
                 SizedBox(
                   width: 40,
                   child: isPlaying
-                    ? const Center(
-                        child: MusicVisualizer(
-                          barCount: 4,
-                          height: 16,
-                          width: 16,
-                          barWidth: 2,
-                          gap: 2,
-                          showDots: false,
-                          color: AppTheme.primaryCyan,
+                      ? const Center(
+                          child: MusicVisualizer(
+                            barCount: 4,
+                            height: 16,
+                            width: 16,
+                            barWidth: 2,
+                            gap: 2,
+                            showDots: false,
+                            color: AppTheme.primaryCyan,
+                          ),
+                        )
+                      : Text(
+                          index.toString().padLeft(2, '0'),
+                          style: TextStyle(
+                              color: Colors.grey[800],
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold),
                         ),
-                      )
-                    : Text(
-                    index.toString().padLeft(2, '0'),
-                    style: TextStyle(
-                        color: Colors.grey[800],
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold),
-                  ),
                 ),
                 Expanded(
                   flex: 4,

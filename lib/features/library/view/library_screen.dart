@@ -5,14 +5,14 @@ import 'package:sonic_snap/features/playlist/view/playlist_screen.dart';
 import 'package:sonic_snap/features/tracks/view/tracks_list.dart';
 import 'package:sonic_snap/widgets/title_bar.dart';
 
-class libraryScreen extends StatefulWidget {
-  const libraryScreen({super.key});
+class LibraryScreen extends StatefulWidget {
+  const LibraryScreen({super.key});
 
   @override
-  State<libraryScreen> createState() => _libraryScreenState();
+  State<LibraryScreen> createState() => _LibraryScreenState();
 }
 
-class _libraryScreenState extends State<libraryScreen>
+class _LibraryScreenState extends State<LibraryScreen>
     with SingleTickerProviderStateMixin {
   bool isPlaying = false;
   bool isPlayerExpanded = false;

@@ -37,7 +37,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
       case MobileNavState.search:
         return const SearchScreen();
       case MobileNavState.library:
-        return const libraryScreen();
+        return const LibraryScreen();
     }
   }
 
